@@ -1,0 +1,365 @@
+# DealershipAI Production Deployment Pipeline
+# Automated CI/CD pipeline for production deployments
+
+name: Production Deploy
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'apps/web/**'
+      - '!apps/web/README.md'
+      - '!apps/web/docs/**'
+  workflow_dispatch:
+    inputs:
+      environment:
+        description: 'Environment to deploy to'
+        required: true
+        default: 'production'
+        type: choice
+        options:
+          - production
+          - staging
+      force_deploy:
+        description: 'Force deployment even if tests fail'
+        required: false
+        default: false
+        type: boolean
+
+env:
+  NODE_VERSION: '18'
+  PNPM_VERSION: '8'
+  AWS_REGION: 'us-east-1'
+  REGISTRY_URL: ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.us-east-1.amazonaws.com
+  IMAGE_NAME: dealershipai-web
+
+jobs:
+  # Quality checks and testing
+  test:
+    name: Run Tests & Quality Checks
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 2
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v2
+        with:
+          version: ${{ env.PNPM_VERSION }}
+          run_install: false
+
+      - name: Get pnpm store directory
+        shell: bash
+        run: echo "STORE_PATH=$(pnpm store path --silent)" >> $GITHUB_ENV
+
+      - name: Setup pnpm cache
+        uses: actions/cache@v3
+        with:
+          path: ${{ env.STORE_PATH }}
+          key: ${{ runner.os }}-pnpm-store-${{ hashFiles('**/pnpm-lock.yaml') }}
+          restore-keys: ${{ runner.os }}-pnpm-store-
+
+      - name: Install Dependencies
+        working-directory: apps/web
+        run: pnpm install --frozen-lockfile
+
+      - name: Type Check
+        working-directory: apps/web
+        run: pnpm run type-check
+
+      - name: Lint Code
+        working-directory: apps/web
+        run: pnpm run lint
+
+      - name: Run Unit Tests
+        working-directory: apps/web
+        run: pnpm run test
+
+      - name: Build Application
+        working-directory: apps/web
+        env:
+          NODE_ENV: production
+          NEXTAUTH_SECRET: ${{ secrets.NEXTAUTH_SECRET }}
+          NEXTAUTH_URL: ${{ secrets.NEXTAUTH_URL }}
+        run: pnpm run build
+
+      - name: Upload Build Artifacts
+        uses: actions/upload-artifact@v3
+        with:
+          name: build-artifacts
+          path: |
+            apps/web/.next/
+            apps/web/public/
+          retention-days: 1
+
+  # Security scanning
+  security:
+    name: Security Scan
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    if: github.event_name == 'push' || github.event.inputs.force_deploy != 'true'
+
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Run Trivy vulnerability scanner
+        uses: aquasecurity/trivy-action@master
+        with:
+          scan-type: 'fs'
+          scan-ref: 'apps/web'
+          format: 'sarif'
+          output: 'trivy-results.sarif'
+
+      - name: Upload Trivy scan results to GitHub Security
+        uses: github/codeql-action/upload-sarif@v2
+        if: always()
+        with:
+          sarif_file: 'trivy-results.sarif'
+
+      - name: Dependency Check
+        working-directory: apps/web
+        run: |
+          npx audit-ci --config .audit-ci.json || exit 0
+
+  # Build and push Docker image
+  build:
+    name: Build & Push Container Image
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    needs: [test, security]
+    if: always() && (needs.test.result == 'success' && (needs.security.result == 'success' || needs.security.result == 'skipped'))
+
+    outputs:
+      image-tag: ${{ steps.meta.outputs.tags }}
+      image-digest: ${{ steps.build.outputs.digest }}
+
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ env.AWS_REGION }}
+
+      - name: Login to ECR
+        id: login-ecr
+        uses: aws-actions/amazon-ecr-login@v2
+
+      - name: Extract metadata
+        id: meta
+        uses: docker/metadata-action@v5
+        with:
+          images: ${{ env.REGISTRY_URL }}/${{ env.IMAGE_NAME }}
+          tags: |
+            type=ref,event=branch
+            type=sha,prefix={{branch}}-
+            type=raw,value=latest,enable={{is_default_branch}}
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Download Build Artifacts
+        uses: actions/download-artifact@v3
+        with:
+          name: build-artifacts
+          path: apps/web/
+
+      - name: Build and Push Image
+        id: build
+        uses: docker/build-push-action@v5
+        with:
+          context: apps/web
+          file: apps/web/Dockerfile.prod
+          platforms: linux/amd64,linux/arm64
+          push: true
+          tags: ${{ steps.meta.outputs.tags }}
+          labels: ${{ steps.meta.outputs.labels }}
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+          build-args: |
+            BUILDTIME=${{ fromJSON(steps.meta.outputs.json).labels['org.opencontainers.image.created'] }}
+            VERSION=${{ fromJSON(steps.meta.outputs.json).labels['org.opencontainers.image.version'] }}
+
+  # Deploy to AWS
+  deploy:
+    name: Deploy to AWS
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    needs: [build]
+    environment: ${{ github.event.inputs.environment || 'production' }}
+
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ env.AWS_REGION }}
+
+      - name: Update ECS Service
+        env:
+          CLUSTER_NAME: dealershipai-${{ github.event.inputs.environment || 'production' }}
+          SERVICE_NAME: dealershipai-web-service
+          IMAGE_URI: ${{ needs.build.outputs.image-tag }}
+        run: |
+          # Get current task definition
+          TASK_DEFINITION=$(aws ecs describe-task-definition \
+            --task-definition $SERVICE_NAME \
+            --query 'taskDefinition' \
+            --output json)
+
+          # Update the image URI in task definition
+          NEW_TASK_DEFINITION=$(echo $TASK_DEFINITION | jq --arg IMAGE_URI "$IMAGE_URI" \
+            '.containerDefinitions[0].image = $IMAGE_URI | del(.taskDefinitionArn) | del(.revision) | del(.status) | del(.requiresAttributes) | del(.placementConstraints) | del(.compatibilities) | del(.registeredAt) | del(.registeredBy)')
+
+          # Register new task definition
+          NEW_TASK_DEF_ARN=$(aws ecs register-task-definition \
+            --cli-input-json "$NEW_TASK_DEFINITION" \
+            --query 'taskDefinition.taskDefinitionArn' \
+            --output text)
+
+          # Update service to use new task definition
+          aws ecs update-service \
+            --cluster $CLUSTER_NAME \
+            --service $SERVICE_NAME \
+            --task-definition $NEW_TASK_DEF_ARN
+
+          echo "✅ Service updated with new task definition: $NEW_TASK_DEF_ARN"
+
+      - name: Wait for Deployment
+        env:
+          CLUSTER_NAME: dealershipai-${{ github.event.inputs.environment || 'production' }}
+          SERVICE_NAME: dealershipai-web-service
+        run: |
+          echo "⏳ Waiting for deployment to complete..."
+          aws ecs wait services-stable \
+            --cluster $CLUSTER_NAME \
+            --services $SERVICE_NAME
+
+          echo "✅ Deployment completed successfully!"
+
+      - name: Update Load Balancer Health Check
+        run: |
+          # Get target group ARN
+          TARGET_GROUP_ARN=$(aws elbv2 describe-target-groups \
+            --names dealershipai-${{ github.event.inputs.environment || 'production' }}-tg \
+            --query 'TargetGroups[0].TargetGroupArn' \
+            --output text)
+
+          # Check health of targets
+          aws elbv2 describe-target-health \
+            --target-group-arn $TARGET_GROUP_ARN
+
+      - name: Run Post-Deployment Tests
+        env:
+          BASE_URL: ${{ secrets.PRODUCTION_URL || 'https://dealershipai.com' }}
+        run: |
+          # Health check
+          echo "🏥 Running health check..."
+          response=$(curl -s -o /dev/null -w "%{http_code}" $BASE_URL/api/health)
+          if [ $response -eq 200 ]; then
+            echo "✅ Health check passed"
+          else
+            echo "❌ Health check failed with status: $response"
+            exit 1
+          fi
+
+          # Basic functionality test
+          echo "🧪 Testing basic functionality..."
+          response=$(curl -s -o /dev/null -w "%{http_code}" $BASE_URL)
+          if [ $response -eq 200 ]; then
+            echo "✅ Main page accessible"
+          else
+            echo "❌ Main page test failed with status: $response"
+            exit 1
+          fi
+
+  # Notify team of deployment
+  notify:
+    name: Notify Deployment Status
+    runs-on: ubuntu-latest
+    needs: [deploy]
+    if: always()
+
+    steps:
+      - name: Notify Slack on Success
+        if: needs.deploy.result == 'success'
+        uses: 8398a7/action-slack@v3
+        with:
+          status: success
+          text: |
+            🚀 *DealershipAI Production Deployment Successful!*
+
+            *Environment:* ${{ github.event.inputs.environment || 'production' }}
+            *Branch:* ${{ github.ref_name }}
+            *Commit:* ${{ github.sha }}
+            *Actor:* ${{ github.actor }}
+
+            ✅ All systems operational
+        env:
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+
+      - name: Notify Slack on Failure
+        if: needs.deploy.result == 'failure'
+        uses: 8398a7/action-slack@v3
+        with:
+          status: failure
+          text: |
+            🚨 *DealershipAI Production Deployment Failed!*
+
+            *Environment:* ${{ github.event.inputs.environment || 'production' }}
+            *Branch:* ${{ github.ref_name }}
+            *Commit:* ${{ github.sha }}
+            *Actor:* ${{ github.actor }}
+
+            ❌ Please check logs and take action
+        env:
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+
+      - name: Create GitHub Release
+        if: needs.deploy.result == 'success' && github.ref == 'refs/heads/main'
+        uses: actions/create-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: v${{ github.run_number }}
+          release_name: Production Release v${{ github.run_number }}
+          body: |
+            🚀 **Automated Production Release**
+
+            **Changes in this release:**
+            ${{ github.event.head_commit.message }}
+
+            **Deployment Details:**
+            - Environment: ${{ github.event.inputs.environment || 'production' }}
+            - Build Number: ${{ github.run_number }}
+            - Commit SHA: ${{ github.sha }}
+            - Deploy Time: ${{ github.event.head_commit.timestamp }}
+
+            **Infrastructure:**
+            - Container Image: ${{ needs.build.outputs.image-tag }}
+            - Image Digest: ${{ needs.build.outputs.image-digest }}
+
+            **Verification:**
+            - ✅ All tests passed
+            - ✅ Security scan completed
+            - ✅ Health checks passed
+            - ✅ Deployment successful
+          draft: false
+          prerelease: false

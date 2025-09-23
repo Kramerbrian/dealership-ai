@@ -1,0 +1,647 @@
+{
+  "id": "dealershipai-v1",
+  "name": "DealershipAI Prompt Pack v1.0",
+  "description": "Comprehensive prompt templates for automotive dealership AI optimization and analysis",
+  "version": "1.0.0",
+  "author": "DealershipAI Team",
+  "metadata": {
+    "createdAt": "2025-01-15T00:00:00.000Z",
+    "updatedAt": "2025-01-15T00:00:00.000Z",
+    "tags": ["automotive", "seo", "aeo", "geo", "dealership", "optimization"],
+    "category": "automotive",
+    "license": "MIT"
+  },
+  "prompts": [
+    {
+      "id": "seo-audit-comprehensive",
+      "name": "Comprehensive SEO Audit",
+      "description": "Generate a detailed SEO audit report for automotive dealerships",
+      "category": "SEO",
+      "template": "# SEO Audit Report for {{dealershipName}}\n\n## Executive Summary\nAnalyzing the SEO performance of {{dealershipName}} located in {{location}}, specializing in {{brand}} vehicles.\n\n## Technical SEO Analysis\n- Core Web Vitals Score: {{coreWebVitals}}/100\n- Mobile Responsiveness: {{mobileScore}}/100\n- Page Load Speed: {{pageSpeed}}ms\n- SSL Security: {{sslStatus}}\n\n## Content Analysis\n{{#if hasInventoryPages}}\n✅ Inventory pages are optimized for search engines\n{{else}}\n❌ Inventory pages need SEO optimization\n{{/if}}\n\n## Keyword Performance\nTarget Keywords:\n{{#each targetKeywords}}\n- {{this}}: Current ranking position {{@index}}\n{{/each}}\n\n## Local SEO Assessment\n- Google Business Profile Score: {{gbpScore}}/100\n- NAP Consistency: {{napConsistency}}%\n- Local Citations: {{citationCount}} found\n- Customer Reviews: {{reviewCount}} reviews ({{averageRating}} avg)\n\n## Recommendations\n1. **Priority**: Fix Core Web Vitals issues to improve user experience\n2. **High Impact**: Optimize inventory pages with schema markup\n3. **Local Focus**: Improve Google Business Profile completeness\n4. **Content Strategy**: Create location-specific landing pages\n\n## Competitive Analysis\nCompared to {{competitorCount}} local competitors:\n- SEO Score Ranking: #{{seoRanking}} of {{totalDealers}}\n- Gap to Leader: {{gapToLeader}} points\n\n## Next Steps\nImplement recommendations in priority order to achieve:\n- Estimated traffic increase: {{trafficIncrease}}%\n- Projected lead increase: {{leadIncrease}} per month\n- ROI timeline: {{roiTimeline}} months",
+      "variables": [
+        {
+          "name": "dealershipName",
+          "type": "string",
+          "description": "Name of the dealership",
+          "required": true
+        },
+        {
+          "name": "location",
+          "type": "string",
+          "description": "Dealership location (city, state)",
+          "required": true
+        },
+        {
+          "name": "brand",
+          "type": "string",
+          "description": "Car brand(s) sold",
+          "required": true
+        },
+        {
+          "name": "coreWebVitals",
+          "type": "number",
+          "description": "Core Web Vitals score (0-100)",
+          "required": true,
+          "validation": {
+            "min": 0,
+            "max": 100
+          }
+        },
+        {
+          "name": "mobileScore",
+          "type": "number",
+          "description": "Mobile optimization score (0-100)",
+          "required": true,
+          "validation": {
+            "min": 0,
+            "max": 100
+          }
+        },
+        {
+          "name": "pageSpeed",
+          "type": "number",
+          "description": "Page load speed in milliseconds",
+          "required": true
+        },
+        {
+          "name": "sslStatus",
+          "type": "string",
+          "description": "SSL certificate status",
+          "required": true,
+          "validation": {
+            "options": ["Valid", "Invalid", "Missing"]
+          }
+        },
+        {
+          "name": "hasInventoryPages",
+          "type": "boolean",
+          "description": "Whether inventory pages are properly optimized",
+          "required": true
+        },
+        {
+          "name": "targetKeywords",
+          "type": "array",
+          "description": "List of target keywords",
+          "required": true
+        },
+        {
+          "name": "gbpScore",
+          "type": "number",
+          "description": "Google Business Profile optimization score",
+          "required": true,
+          "validation": {
+            "min": 0,
+            "max": 100
+          }
+        },
+        {
+          "name": "napConsistency",
+          "type": "number",
+          "description": "NAP consistency percentage",
+          "required": true,
+          "validation": {
+            "min": 0,
+            "max": 100
+          }
+        },
+        {
+          "name": "citationCount",
+          "type": "number",
+          "description": "Number of local citations found",
+          "required": true
+        },
+        {
+          "name": "reviewCount",
+          "type": "number",
+          "description": "Total number of customer reviews",
+          "required": true
+        },
+        {
+          "name": "averageRating",
+          "type": "number",
+          "description": "Average review rating (1-5)",
+          "required": true,
+          "validation": {
+            "min": 1,
+            "max": 5
+          }
+        },
+        {
+          "name": "competitorCount",
+          "type": "number",
+          "description": "Number of local competitors analyzed",
+          "required": true
+        },
+        {
+          "name": "seoRanking",
+          "type": "number",
+          "description": "Current SEO ranking position",
+          "required": true
+        },
+        {
+          "name": "totalDealers",
+          "type": "number",
+          "description": "Total number of dealers in market",
+          "required": true
+        },
+        {
+          "name": "gapToLeader",
+          "type": "number",
+          "description": "SEO score gap to market leader",
+          "required": true
+        },
+        {
+          "name": "trafficIncrease",
+          "type": "number",
+          "description": "Estimated traffic increase percentage",
+          "required": true
+        },
+        {
+          "name": "leadIncrease",
+          "type": "number",
+          "description": "Projected monthly lead increase",
+          "required": true
+        },
+        {
+          "name": "roiTimeline",
+          "type": "number",
+          "description": "Expected ROI timeline in months",
+          "required": true
+        }
+      ],
+      "metadata": {
+        "author": "DealershipAI Team",
+        "version": "1.0",
+        "tags": ["seo", "audit", "comprehensive", "automotive"],
+        "createdAt": "2025-01-15T00:00:00.000Z",
+        "updatedAt": "2025-01-15T00:00:00.000Z"
+      },
+      "settings": {
+        "model": "gpt-4o",
+        "maxTokens": 2000,
+        "temperature": 0.3,
+        "topP": 0.9
+      }
+    },
+    {
+      "id": "aeo-optimization-strategy",
+      "name": "AI Answer Engine Optimization Strategy",
+      "description": "Create AEO strategy for improving visibility in AI-powered search results",
+      "category": "AEO",
+      "template": "# AI Answer Engine Optimization Strategy\n## For {{dealershipName}} - {{brand}} Dealer\n\n### Current AEO Performance\n**Overall AEO Score**: {{aeoScore}}/100\n\n**Breakdown by AI Platform**:\n- ChatGPT Citations: {{chatgptCitations}}\n- Claude Mentions: {{claudeMentions}}\n- Perplexity References: {{perplexityRefs}}\n- Google AI Overviews: {{googleAIRefs}}\n\n### Content Gap Analysis\n{{#if hasFAQSection}}\n✅ FAQ section exists but needs optimization\n{{else}}\n❌ Missing FAQ section - critical for AEO success\n{{/if}}\n\n{{#if hasStructuredData}}\n✅ Some structured data implemented\n{{else}}\n❌ No structured data found - immediate priority\n{{/if}}\n\n### AEO Optimization Roadmap\n\n#### Phase 1: Foundation (Weeks 1-2)\n1. **Implement FAQ Schema Markup**\n   - Target Questions:\n   {{#each commonQuestions}}\n   - \"{{this}}\"\n   {{/each}}\n\n2. **Create Conversational Content**\n   - Transform features into natural Q&A format\n   - Focus on {{primaryService}} inquiries\n\n#### Phase 2: Content Expansion (Weeks 3-4)\n1. **Build Answer-Focused Pages**\n   - \"How to finance a {{brand}} in {{location}}\"\n   - \"What's included in {{primaryService}} at {{dealershipName}}?\"\n   - \"Why choose {{dealershipName}} over competitors?\"\n\n2. **Optimize for Voice Search**\n   - Long-tail conversational keywords\n   - Local modifier integration\n\n#### Phase 3: Authority Building (Weeks 5-8)\n1. **Expert Content Creation**\n   - {{brand}} buying guides\n   - Maintenance tips and schedules\n   - Local market insights\n\n2. **Citation Building**\n   - Industry publication outreach\n   - Local media engagement\n   - Expert commentary opportunities\n\n### Success Metrics\n- Target AEO Score: {{targetAEOScore}}/100 ({{improvementNeeded}} point increase)\n- AI Platform Citation Goals:\n  - ChatGPT: {{chatgptTarget}} monthly mentions\n  - Claude: {{claudeTarget}} monthly mentions\n  - Perplexity: {{perplexityTarget}} monthly references\n\n### ROI Projection\n- Estimated monthly traffic from AI search: +{{estimatedTraffic}} visitors\n- Projected lead increase: {{projectedLeads}} per month\n- Expected revenue impact: ${{revenueImpact}}/month\n- Payback period: {{paybackPeriod}} months\n\n### Implementation Timeline\nTotal implementation time: {{totalWeeks}} weeks\nEstimated budget: ${{estimatedBudget}}\nExpected ROI: {{expectedROI}}%",
+      "variables": [
+        {
+          "name": "dealershipName",
+          "type": "string",
+          "description": "Name of the dealership",
+          "required": true
+        },
+        {
+          "name": "brand",
+          "type": "string",
+          "description": "Car brand(s) sold",
+          "required": true
+        },
+        {
+          "name": "location",
+          "type": "string",
+          "description": "Dealership location",
+          "required": true
+        },
+        {
+          "name": "aeoScore",
+          "type": "number",
+          "description": "Current AEO score (0-100)",
+          "required": true,
+          "validation": {
+            "min": 0,
+            "max": 100
+          }
+        },
+        {
+          "name": "chatgptCitations",
+          "type": "number",
+          "description": "Number of ChatGPT citations",
+          "required": true
+        },
+        {
+          "name": "claudeMentions",
+          "type": "number",
+          "description": "Number of Claude mentions",
+          "required": true
+        },
+        {
+          "name": "perplexityRefs",
+          "type": "number",
+          "description": "Number of Perplexity references",
+          "required": true
+        },
+        {
+          "name": "googleAIRefs",
+          "type": "number",
+          "description": "Number of Google AI Overview references",
+          "required": true
+        },
+        {
+          "name": "hasFAQSection",
+          "type": "boolean",
+          "description": "Whether the site has an FAQ section",
+          "required": true
+        },
+        {
+          "name": "hasStructuredData",
+          "type": "boolean",
+          "description": "Whether structured data is implemented",
+          "required": true
+        },
+        {
+          "name": "commonQuestions",
+          "type": "array",
+          "description": "List of common customer questions",
+          "required": true
+        },
+        {
+          "name": "primaryService",
+          "type": "string",
+          "description": "Primary service offered (sales, service, parts, etc.)",
+          "required": true
+        },
+        {
+          "name": "targetAEOScore",
+          "type": "number",
+          "description": "Target AEO score to achieve",
+          "required": true,
+          "validation": {
+            "min": 0,
+            "max": 100
+          }
+        },
+        {
+          "name": "improvementNeeded",
+          "type": "number",
+          "description": "Points improvement needed",
+          "required": true
+        },
+        {
+          "name": "chatgptTarget",
+          "type": "number",
+          "description": "Target ChatGPT monthly mentions",
+          "required": true
+        },
+        {
+          "name": "claudeTarget",
+          "type": "number",
+          "description": "Target Claude monthly mentions",
+          "required": true
+        },
+        {
+          "name": "perplexityTarget",
+          "type": "number",
+          "description": "Target Perplexity monthly references",
+          "required": true
+        },
+        {
+          "name": "estimatedTraffic",
+          "type": "number",
+          "description": "Estimated monthly traffic increase",
+          "required": true
+        },
+        {
+          "name": "projectedLeads",
+          "type": "number",
+          "description": "Projected monthly lead increase",
+          "required": true
+        },
+        {
+          "name": "revenueImpact",
+          "type": "number",
+          "description": "Expected monthly revenue impact",
+          "required": true
+        },
+        {
+          "name": "paybackPeriod",
+          "type": "number",
+          "description": "Payback period in months",
+          "required": true
+        },
+        {
+          "name": "totalWeeks",
+          "type": "number",
+          "description": "Total implementation weeks",
+          "required": true
+        },
+        {
+          "name": "estimatedBudget",
+          "type": "number",
+          "description": "Estimated implementation budget",
+          "required": true
+        },
+        {
+          "name": "expectedROI",
+          "type": "number",
+          "description": "Expected ROI percentage",
+          "required": true
+        }
+      ],
+      "metadata": {
+        "author": "DealershipAI Team",
+        "version": "1.0",
+        "tags": ["aeo", "ai", "optimization", "strategy"],
+        "createdAt": "2025-01-15T00:00:00.000Z",
+        "updatedAt": "2025-01-15T00:00:00.000Z"
+      },
+      "settings": {
+        "model": "gpt-4o",
+        "maxTokens": 2500,
+        "temperature": 0.2,
+        "topP": 0.8
+      }
+    },
+    {
+      "id": "competitive-analysis-report",
+      "name": "Competitive Analysis Report",
+      "description": "Generate comprehensive competitive analysis for dealership market positioning",
+      "category": "Analysis",
+      "template": "# Competitive Analysis Report\n## {{dealershipName}} vs Local Market\n\n### Market Overview\n**Analysis Date**: {{analysisDate}}\n**Market**: {{marketArea}}\n**Competitors Analyzed**: {{competitorCount}}\n**Market Size**: {{marketSize}} dealerships\n\n### Performance Benchmarking\n\n#### Overall Market Position\n{{dealershipName}} ranks **#{{currentRank}} of {{totalCompetitors}}** in the {{marketArea}} market.\n\n#### Scoring Comparison\n| Metric | {{dealershipName}} | Market Average | Market Leader | Gap to Leader |\n|--------|-------------------|----------------|---------------|---------------|\n| SEO Score | {{seoScore}}/100 | {{avgSEOScore}}/100 | {{topSEOScore}}/100 | {{seoGap}} points |\n| AEO Score | {{aeoScore}}/100 | {{avgAEOScore}}/100 | {{topAEOScore}}/100 | {{aeoGap}} points |\n| GEO Score | {{geoScore}}/100 | {{avgGEOScore}}/100 | {{topGEOScore}}/100 | {{geoGap}} points |\n| Overall | {{overallScore}}/100 | {{avgOverallScore}}/100 | {{topOverallScore}}/100 | {{overallGap}} points |\n\n### Top Competitors Analysis\n\n{{#each topCompetitors}}\n#### {{name}}\n- **Position**: #{{rank}}\n- **Overall Score**: {{score}}/100\n- **Strengths**: {{strengths}}\n- **Key Differentiators**: {{differentiators}}\n- **Estimated Monthly Traffic**: {{trafficEstimate}}\n{{/each}}\n\n### Competitive Strengths & Weaknesses\n\n#### {{dealershipName}} Strengths\n{{#each strengths}}\n✅ {{this}}\n{{/each}}\n\n#### Areas for Improvement\n{{#each weaknesses}}\n🔧 {{this}}\n{{/each}}\n\n### Market Opportunities\n\n#### Underexploited Keywords\n{{#each opportunityKeywords}}\n- **{{keyword}}**: {{searchVolume}} monthly searches, {{difficulty}} difficulty\n  - Current leader: {{currentLeader}}\n  - Opportunity score: {{opportunityScore}}/10\n{{/each}}\n\n#### Content Gaps\n{{#each contentGaps}}\n- {{topic}}: {{description}}\n  - Potential traffic: {{potentialTraffic}} monthly visitors\n  - Competition level: {{competitionLevel}}\n{{/each}}\n\n### Strategic Recommendations\n\n#### Quick Wins (0-3 months)\n{{#each quickWins}}\n1. **{{title}}**\n   - Impact: {{impact}}\n   - Effort: {{effort}}\n   - Expected Result: {{expectedResult}}\n{{/each}}\n\n#### Medium-term Goals (3-6 months)\n{{#each mediumTermGoals}}\n1. **{{title}}**\n   - Investment Required: ${{investment}}\n   - Potential ROI: {{roi}}%\n   - Risk Level: {{riskLevel}}\n{{/each}}\n\n#### Long-term Strategy (6-12 months)\n{{#each longTermStrategy}}\n1. **{{title}}**\n   - Market Impact: {{marketImpact}}\n   - Competitive Advantage: {{advantage}}\n   - Success Metrics: {{metrics}}\n{{/each}}\n\n### Success Metrics & KPIs\n\n#### Target Improvements (6-month goals)\n- SEO Score: {{seoScore}} → {{targetSEOScore}} (+{{seoImprovement}} points)\n- AEO Score: {{aeoScore}} → {{targetAEOScore}} (+{{aeoImprovement}} points)\n- GEO Score: {{geoScore}} → {{targetGEOScore}} (+{{geoImprovement}} points)\n- Market Ranking: #{{currentRank}} → #{{targetRank}}\n\n#### ROI Projections\n- Estimated Traffic Increase: +{{trafficIncrease}}%\n- Projected Lead Growth: +{{leadGrowth}} monthly\n- Revenue Impact: ${{revenueImpact}}/month\n- Investment Required: ${{investmentRequired}}\n- Payback Period: {{paybackMonths}} months\n\n### Next Steps\n1. **Immediate Actions**: Implement quick wins identified above\n2. **Resource Allocation**: Budget ${{monthlyBudget}}/month for competitive initiatives\n3. **Monitoring**: Track progress monthly against KPIs\n4. **Review Cycle**: Quarterly competitive analysis updates\n\n*Report generated on {{analysisDate}} using DealershipAI competitive intelligence platform.*",
+      "variables": [
+        {
+          "name": "dealershipName",
+          "type": "string",
+          "description": "Name of the dealership",
+          "required": true
+        },
+        {
+          "name": "analysisDate",
+          "type": "string",
+          "description": "Date of analysis",
+          "required": true
+        },
+        {
+          "name": "marketArea",
+          "type": "string",
+          "description": "Geographic market area",
+          "required": true
+        },
+        {
+          "name": "competitorCount",
+          "type": "number",
+          "description": "Number of competitors analyzed",
+          "required": true
+        },
+        {
+          "name": "marketSize",
+          "type": "number",
+          "description": "Total market size (number of dealerships)",
+          "required": true
+        },
+        {
+          "name": "currentRank",
+          "type": "number",
+          "description": "Current market ranking",
+          "required": true
+        },
+        {
+          "name": "totalCompetitors",
+          "type": "number",
+          "description": "Total number of competitors",
+          "required": true
+        },
+        {
+          "name": "seoScore",
+          "type": "number",
+          "description": "Current SEO score",
+          "required": true
+        },
+        {
+          "name": "avgSEOScore",
+          "type": "number",
+          "description": "Market average SEO score",
+          "required": true
+        },
+        {
+          "name": "topSEOScore",
+          "type": "number",
+          "description": "Market leader SEO score",
+          "required": true
+        },
+        {
+          "name": "seoGap",
+          "type": "number",
+          "description": "SEO score gap to leader",
+          "required": true
+        },
+        {
+          "name": "aeoScore",
+          "type": "number",
+          "description": "Current AEO score",
+          "required": true
+        },
+        {
+          "name": "avgAEOScore",
+          "type": "number",
+          "description": "Market average AEO score",
+          "required": true
+        },
+        {
+          "name": "topAEOScore",
+          "type": "number",
+          "description": "Market leader AEO score",
+          "required": true
+        },
+        {
+          "name": "aeoGap",
+          "type": "number",
+          "description": "AEO score gap to leader",
+          "required": true
+        },
+        {
+          "name": "geoScore",
+          "type": "number",
+          "description": "Current GEO score",
+          "required": true
+        },
+        {
+          "name": "avgGEOScore",
+          "type": "number",
+          "description": "Market average GEO score",
+          "required": true
+        },
+        {
+          "name": "topGEOScore",
+          "type": "number",
+          "description": "Market leader GEO score",
+          "required": true
+        },
+        {
+          "name": "geoGap",
+          "type": "number",
+          "description": "GEO score gap to leader",
+          "required": true
+        },
+        {
+          "name": "overallScore",
+          "type": "number",
+          "description": "Current overall score",
+          "required": true
+        },
+        {
+          "name": "avgOverallScore",
+          "type": "number",
+          "description": "Market average overall score",
+          "required": true
+        },
+        {
+          "name": "topOverallScore",
+          "type": "number",
+          "description": "Market leader overall score",
+          "required": true
+        },
+        {
+          "name": "overallGap",
+          "type": "number",
+          "description": "Overall score gap to leader",
+          "required": true
+        },
+        {
+          "name": "topCompetitors",
+          "type": "array",
+          "description": "List of top competitor details",
+          "required": true
+        },
+        {
+          "name": "strengths",
+          "type": "array",
+          "description": "List of dealership strengths",
+          "required": true
+        },
+        {
+          "name": "weaknesses",
+          "type": "array",
+          "description": "List of areas for improvement",
+          "required": true
+        },
+        {
+          "name": "opportunityKeywords",
+          "type": "array",
+          "description": "List of opportunity keywords",
+          "required": true
+        },
+        {
+          "name": "contentGaps",
+          "type": "array",
+          "description": "List of content gap opportunities",
+          "required": true
+        },
+        {
+          "name": "quickWins",
+          "type": "array",
+          "description": "List of quick win recommendations",
+          "required": true
+        },
+        {
+          "name": "mediumTermGoals",
+          "type": "array",
+          "description": "List of medium-term goals",
+          "required": true
+        },
+        {
+          "name": "longTermStrategy",
+          "type": "array",
+          "description": "List of long-term strategies",
+          "required": true
+        },
+        {
+          "name": "targetSEOScore",
+          "type": "number",
+          "description": "Target SEO score",
+          "required": true
+        },
+        {
+          "name": "seoImprovement",
+          "type": "number",
+          "description": "SEO improvement needed",
+          "required": true
+        },
+        {
+          "name": "targetAEOScore",
+          "type": "number",
+          "description": "Target AEO score",
+          "required": true
+        },
+        {
+          "name": "aeoImprovement",
+          "type": "number",
+          "description": "AEO improvement needed",
+          "required": true
+        },
+        {
+          "name": "targetGEOScore",
+          "type": "number",
+          "description": "Target GEO score",
+          "required": true
+        },
+        {
+          "name": "geoImprovement",
+          "type": "number",
+          "description": "GEO improvement needed",
+          "required": true
+        },
+        {
+          "name": "targetRank",
+          "type": "number",
+          "description": "Target market ranking",
+          "required": true
+        },
+        {
+          "name": "trafficIncrease",
+          "type": "number",
+          "description": "Estimated traffic increase percentage",
+          "required": true
+        },
+        {
+          "name": "leadGrowth",
+          "type": "number",
+          "description": "Projected monthly lead growth",
+          "required": true
+        },
+        {
+          "name": "revenueImpact",
+          "type": "number",
+          "description": "Monthly revenue impact",
+          "required": true
+        },
+        {
+          "name": "investmentRequired",
+          "type": "number",
+          "description": "Total investment required",
+          "required": true
+        },
+        {
+          "name": "paybackMonths",
+          "type": "number",
+          "description": "Payback period in months",
+          "required": true
+        },
+        {
+          "name": "monthlyBudget",
+          "type": "number",
+          "description": "Recommended monthly budget",
+          "required": true
+        }
+      ],
+      "metadata": {
+        "author": "DealershipAI Team",
+        "version": "1.0",
+        "tags": ["competitive", "analysis", "benchmarking", "strategy"],
+        "createdAt": "2025-01-15T00:00:00.000Z",
+        "updatedAt": "2025-01-15T00:00:00.000Z"
+      },
+      "settings": {
+        "model": "gpt-4o",
+        "maxTokens": 4000,
+        "temperature": 0.2,
+        "topP": 0.9
+      }
+    }
+  ]
+}

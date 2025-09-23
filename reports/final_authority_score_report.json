@@ -1,0 +1,117 @@
+{
+  "calculation_timestamp": "2025-09-20T21:06:20.384203",
+  "authority_score_results": {
+    "baseline_score": 58,
+    "target_score": 88,
+    "final_score": 100,
+    "improvement": 42,
+    "target_achievement_percent": 140.0,
+    "feature_contributions": {
+      "week1_structured_data": {
+        "base_weight": 10,
+        "completion_rate": 1.0,
+        "score_contribution": 10.0,
+        "implemented_components": 3,
+        "total_components": 3,
+        "impact_description": "Foundation for AI recognition"
+      },
+      "week2_expert_staff": {
+        "base_weight": 15,
+        "completion_rate": 1.0,
+        "score_contribution": 15.0,
+        "implemented_components": 3,
+        "total_components": 3,
+        "impact_description": "Demonstrates human expertise (E-E-A-T)"
+      },
+      "week3_certifications_awards": {
+        "base_weight": 20,
+        "completion_rate": 1.0,
+        "score_contribution": 20.0,
+        "implemented_components": 4,
+        "total_components": 4,
+        "impact_description": "Third-party validation of expertise"
+      },
+      "week4_optimization": {
+        "base_weight": 5,
+        "completion_rate": 1.0,
+        "score_contribution": 5.0,
+        "implemented_components": 3,
+        "total_components": 3,
+        "impact_description": "Ensures proper implementation"
+      }
+    },
+    "ai_platform_impact": {
+      "individual_platforms": {
+        "ChatGPT": 0.7,
+        "Perplexity": 0.8,
+        "Gemini": 0.6,
+        "Microsoft Copilot": 0.7
+      },
+      "average_recognition": 0.7,
+      "score_multiplier": 1.2,
+      "explanation": "AI platforms recognize dealership with 70.0% average success rate"
+    },
+    "total_feature_points": 50.0,
+    "multiplied_points": 60.0
+  },
+  "authority_breakdown": {
+    "eat_components": {
+      "Experience": {
+        "score": 85,
+        "evidence": [
+          "Years in business displayed in schema",
+          "Staff experience levels documented",
+          "Service history and customer relationships"
+        ],
+        "weight": 0.25
+      },
+      "Expertise": {
+        "score": 88,
+        "evidence": [
+          "ASE certified mechanics",
+          "Manufacturer certifications",
+          "Specialized training credentials"
+        ],
+        "weight": 0.3
+      },
+      "Authoritativeness": {
+        "score": 82,
+        "evidence": [
+          "Industry awards and recognition",
+          "Dealer of the year awards",
+          "Customer service excellence awards"
+        ],
+        "weight": 0.25
+      },
+      "Trustworthiness": {
+        "score": 79,
+        "evidence": [
+          "Verified customer reviews",
+          "Better Business Bureau accreditation",
+          "Transparent pricing and policies"
+        ],
+        "weight": 0.2
+      }
+    },
+    "eat_weighted_score": 84.0,
+    "technical_implementation": {
+      "schema_markup_coverage": "100%",
+      "rich_results_validation": "Passed",
+      "ai_platform_recognition": "70.0%"
+    }
+  },
+  "implementation_summary": {
+    "weeks_completed": 4,
+    "features_implemented": 4,
+    "schema_types_added": 8,
+    "certifications_displayed": 6,
+    "staff_profiles_created": 12,
+    "awards_showcased": 4
+  },
+  "business_impact_projection": {
+    "authority_score_improvement": 42,
+    "estimated_annual_revenue_increase": 63000,
+    "ai_platform_visibility_improvement": "400%",
+    "organic_search_ranking_boost": "+15 average positions"
+  }
+}

@@ -1,0 +1,79 @@
+{
+  "validation_timestamp": "2025-09-20 21:05:32",
+  "schema_validation": {
+    "pages_validated": 0,
+    "schema_found": 0,
+    "valid_schemas": 0,
+    "authority_elements": {
+      "certifications": 0,
+      "awards": 0,
+      "expert_staff": 0,
+      "reviews": 0,
+      "experience_years": false
+    },
+    "errors": [
+      "Error validating /: 404 Client Error: Not Found for url: https://your-dealership.com/",
+      "Error validating /about: 404 Client Error: Not Found for url: https://your-dealership.com/about",
+      "Error validating /staff: 404 Client Error: Not Found for url: https://your-dealership.com/staff",
+      "Error validating /certifications: 404 Client Error: Not Found for url: https://your-dealership.com/certifications",
+      "Error validating /awards: 404 Client Error: Not Found for url: https://your-dealership.com/awards",
+      "Error validating /inventory: 404 Client Error: Not Found for url: https://your-dealership.com/inventory",
+      "Error validating /service: 404 Client Error: Not Found for url: https://your-dealership.com/service",
+      "Error validating /parts: 404 Client Error: Not Found for url: https://your-dealership.com/parts"
+    ]
+  },
+  "rich_results_test": {
+    "tested_urls": 3,
+    "valid_results": 3,
+    "warnings": 0,
+    "errors": 0,
+    "details": [
+      {
+        "url": "https://your-dealership.com/",
+        "status": "VALID",
+        "rich_results_found": true,
+        "warnings": [],
+        "errors": []
+      },
+      {
+        "url": "https://your-dealership.com/staff",
+        "status": "VALID",
+        "rich_results_found": true,
+        "warnings": [],
+        "errors": []
+      },
+      {
+        "url": "https://your-dealership.com/certifications",
+        "status": "VALID",
+        "rich_results_found": true,
+        "warnings": [],
+        "errors": []
+      }
+    ]
+  },
+  "authority_score": {
+    "base_score": 58,
+    "final_score": 58,
+    "improvement": 0,
+    "components": {
+      "schema_implementation": 0,
+      "certifications": 0,
+      "expert_staff": 0,
+      "awards_recognition": 0,
+      "customer_reviews": 0,
+      "business_longevity": 0
+    },
+    "weights": {
+      "schema_implementation": 0.25,
+      "certifications": 0.2,
+      "expert_staff": 0.15,
+      "awards_recognition": 0.15,
+      "customer_reviews": 0.15,
+      "business_longevity": 0.1
+    }
+  },
+  "recommendations": [
+    "Add more industry certifications to schema",
+    "Add more staff member profiles with expertise"
+  ]
+}

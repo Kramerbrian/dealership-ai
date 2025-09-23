@@ -1,0 +1,15 @@
+{
+  "name": "@dealershipai/ui",
+  "private": true,
+  "version": "0.0.1",
+  "type": "module",
+  "exports": { ".": "./src/index.ts" },
+  "scripts": {
+    "lint": "echo 'add lint'",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "react": "18.2.0",
+    "typescript": "^5.3.3"
+  }
+}

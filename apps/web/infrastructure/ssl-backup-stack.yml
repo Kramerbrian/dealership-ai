@@ -1,0 +1,400 @@
+# SSL Certificate and Backup Infrastructure for DealershipAI
+AWSTemplateFormatVersion: '2010-09-09'
+Description: 'SSL certificates, backup strategy, and disaster recovery'
+
+Parameters:
+  DomainName:
+    Type: String
+    Description: Primary domain name
+    Default: dealershipai.com
+
+  Environment:
+    Type: String
+    Default: production
+
+Resources:
+  # ACM SSL Certificate
+  SSLCertificate:
+    Type: AWS::CertificateManager::Certificate
+    Properties:
+      DomainName: !Ref DomainName
+      SubjectAlternativeNames:
+        - !Sub 'www.${DomainName}'
+        - !Sub 'api.${DomainName}'
+        - !Sub 'app.${DomainName}'
+      ValidationMethod: DNS
+      DomainValidationOptions:
+        - DomainName: !Ref DomainName
+          HostedZoneId: !Ref HostedZone
+      Tags:
+        - Key: Name
+          Value: !Sub '${Environment}-dealershipai-ssl'
+
+  # Route53 Hosted Zone
+  HostedZone:
+    Type: AWS::Route53::HostedZone
+    Properties:
+      Name: !Ref DomainName
+      HostedZoneConfig:
+        Comment: !Sub 'Hosted zone for ${DomainName}'
+
+  # Route53 Records
+  AliasRecord:
+    Type: AWS::Route53::RecordSet
+    Properties:
+      HostedZoneId: !Ref HostedZone
+      Name: !Ref DomainName
+      Type: A
+      AliasTarget:
+        DNSName: !GetAtt ApplicationLoadBalancer.DNSName
+        HostedZoneId: !GetAtt ApplicationLoadBalancer.CanonicalHostedZoneID
+
+  WWWRecord:
+    Type: AWS::Route53::RecordSet
+    Properties:
+      HostedZoneId: !Ref HostedZone
+      Name: !Sub 'www.${DomainName}'
+      Type: CNAME
+      TTL: 300
+      ResourceRecords:
+        - !Ref DomainName
+
+  APIRecord:
+    Type: AWS::Route53::RecordSet
+    Properties:
+      HostedZoneId: !Ref HostedZone
+      Name: !Sub 'api.${DomainName}'
+      Type: A
+      AliasTarget:
+        DNSName: !GetAtt ApplicationLoadBalancer.DNSName
+        HostedZoneId: !GetAtt ApplicationLoadBalancer.CanonicalHostedZoneID
+
+  # S3 Backup Bucket
+  BackupBucket:
+    Type: AWS::S3::Bucket
+    Properties:
+      BucketName: !Sub '${Environment}-dealershipai-backups-${AWS::AccountId}'
+      BucketEncryption:
+        ServerSideEncryptionConfiguration:
+          - ServerSideEncryptionByDefault:
+              SSEAlgorithm: AES256
+      LifecycleConfiguration:
+        Rules:
+          - Id: BackupRetention
+            Status: Enabled
+            ExpirationInDays: 90
+            Transitions:
+              - StorageClass: STANDARD_IA
+                TransitionInDays: 30
+              - StorageClass: GLACIER
+                TransitionInDays: 60
+      VersioningConfiguration:
+        Status: Enabled
+      PublicAccessBlockConfiguration:
+        BlockPublicAcls: true
+        BlockPublicPolicy: true
+        IgnorePublicAcls: true
+        RestrictPublicBuckets: true
+
+  # Database Backup Lambda Function
+  DatabaseBackupFunction:
+    Type: AWS::Lambda::Function
+    Properties:
+      FunctionName: !Sub '${Environment}-dealershipai-db-backup'
+      Runtime: python3.9
+      Handler: index.lambda_handler
+      Role: !GetAtt DatabaseBackupRole.Arn
+      Timeout: 900
+      Environment:
+        Variables:
+          DB_IDENTIFIER: !Sub '${AWS::StackName}-postgres'
+          BACKUP_BUCKET: !Ref BackupBucket
+      Code:
+        ZipFile: |
+          import boto3
+          import json
+          import os
+          from datetime import datetime
+
+          def lambda_handler(event, context):
+              rds = boto3.client('rds')
+              s3 = boto3.client('s3')
+
+              db_identifier = os.environ['DB_IDENTIFIER']
+              backup_bucket = os.environ['BACKUP_BUCKET']
+
+              # Create snapshot
+              snapshot_id = f"{db_identifier}-{datetime.now().strftime('%Y%m%d-%H%M%S')}"
+
+              try:
+                  response = rds.create_db_snapshot(
+                      DBSnapshotIdentifier=snapshot_id,
+                      DBInstanceIdentifier=db_identifier
+                  )
+
+                  # Log backup details
+                  backup_info = {
+                      'timestamp': datetime.now().isoformat(),
+                      'snapshot_id': snapshot_id,
+                      'db_instance': db_identifier,
+                      'status': 'initiated'
+                  }
+
+                  # Upload backup log to S3
+                  s3.put_object(
+                      Bucket=backup_bucket,
+                      Key=f"backup-logs/{datetime.now().strftime('%Y/%m/%d')}/{snapshot_id}.json",
+                      Body=json.dumps(backup_info),
+                      ContentType='application/json'
+                  )
+
+                  return {
+                      'statusCode': 200,
+                      'body': json.dumps({
+                          'message': 'Database backup initiated successfully',
+                          'snapshot_id': snapshot_id
+                      })
+                  }
+
+              except Exception as e:
+                  return {
+                      'statusCode': 500,
+                      'body': json.dumps({
+                          'message': 'Database backup failed',
+                          'error': str(e)
+                      })
+                  }
+
+  DatabaseBackupRole:
+    Type: AWS::IAM::Role
+    Properties:
+      AssumeRolePolicyDocument:
+        Version: '2012-10-17'
+        Statement:
+          - Effect: Allow
+            Principal:
+              Service: lambda.amazonaws.com
+            Action: sts:AssumeRole
+      ManagedPolicyArns:
+        - arn:aws:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole
+      Policies:
+        - PolicyName: DatabaseBackupPolicy
+          PolicyDocument:
+            Version: '2012-10-17'
+            Statement:
+              - Effect: Allow
+                Action:
+                  - rds:CreateDBSnapshot
+                  - rds:DescribeDBSnapshots
+                  - rds:DescribeDBInstances
+                Resource: '*'
+              - Effect: Allow
+                Action:
+                  - s3:PutObject
+                  - s3:GetObject
+                Resource: !Sub '${BackupBucket}/*'
+
+  # Scheduled Backup Rule
+  BackupScheduleRule:
+    Type: AWS::Events::Rule
+    Properties:
+      Description: 'Daily database backup schedule'
+      ScheduleExpression: 'cron(0 2 * * ? *)'  # Daily at 2 AM UTC
+      State: ENABLED
+      Targets:
+        - Arn: !GetAtt DatabaseBackupFunction.Arn
+          Id: DatabaseBackupTarget
+
+  BackupLambdaPermission:
+    Type: AWS::Lambda::Permission
+    Properties:
+      Action: lambda:InvokeFunction
+      FunctionName: !Ref DatabaseBackupFunction
+      Principal: events.amazonaws.com
+      SourceArn: !GetAtt BackupScheduleRule.Arn
+
+  # Application Files Backup Lambda
+  ApplicationBackupFunction:
+    Type: AWS::Lambda::Function
+    Properties:
+      FunctionName: !Sub '${Environment}-dealershipai-app-backup'
+      Runtime: python3.9
+      Handler: index.lambda_handler
+      Role: !GetAtt ApplicationBackupRole.Arn
+      Timeout: 900
+      Environment:
+        Variables:
+          BACKUP_BUCKET: !Ref BackupBucket
+          AUTO_SCALING_GROUP: !Sub '${AWS::StackName}-asg'
+      Code:
+        ZipFile: |
+          import boto3
+          import json
+          import os
+          from datetime import datetime
+
+          def lambda_handler(event, context):
+              ec2 = boto3.client('ec2')
+              s3 = boto3.client('s3')
+              autoscaling = boto3.client('autoscaling')
+
+              backup_bucket = os.environ['BACKUP_BUCKET']
+              asg_name = os.environ['AUTO_SCALING_GROUP']
+
+              try:
+                  # Get instances from Auto Scaling Group
+                  response = autoscaling.describe_auto_scaling_groups(
+                      AutoScalingGroupNames=[asg_name]
+                  )
+
+                  instance_ids = []
+                  for asg in response['AutoScalingGroups']:
+                      for instance in asg['Instances']:
+                          instance_ids.append(instance['InstanceId'])
+
+                  # Create AMI from first healthy instance
+                  if instance_ids:
+                      ami_name = f"dealershipai-{datetime.now().strftime('%Y%m%d-%H%M%S')}"
+
+                      response = ec2.create_image(
+                          InstanceId=instance_ids[0],
+                          Name=ami_name,
+                          Description=f'DealershipAI application backup - {datetime.now().isoformat()}',
+                          NoReboot=True
+                      )
+
+                      # Log backup details
+                      backup_info = {
+                          'timestamp': datetime.now().isoformat(),
+                          'ami_id': response['ImageId'],
+                          'ami_name': ami_name,
+                          'source_instance': instance_ids[0],
+                          'status': 'created'
+                      }
+
+                      # Upload backup log to S3
+                      s3.put_object(
+                          Bucket=backup_bucket,
+                          Key=f"app-backups/{datetime.now().strftime('%Y/%m/%d')}/{ami_name}.json",
+                          Body=json.dumps(backup_info),
+                          ContentType='application/json'
+                      )
+
+                      return {
+                          'statusCode': 200,
+                          'body': json.dumps({
+                              'message': 'Application backup created successfully',
+                              'ami_id': response['ImageId']
+                          })
+                      }
+                  else:
+                      return {
+                          'statusCode': 404,
+                          'body': json.dumps({'message': 'No instances found in Auto Scaling Group'})
+                      }
+
+              except Exception as e:
+                  return {
+                      'statusCode': 500,
+                      'body': json.dumps({
+                          'message': 'Application backup failed',
+                          'error': str(e)
+                      })
+                  }
+
+  ApplicationBackupRole:
+    Type: AWS::IAM::Role
+    Properties:
+      AssumeRolePolicyDocument:
+        Version: '2012-10-17'
+        Statement:
+          - Effect: Allow
+            Principal:
+              Service: lambda.amazonaws.com
+            Action: sts:AssumeRole
+      ManagedPolicyArns:
+        - arn:aws:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole
+      Policies:
+        - PolicyName: ApplicationBackupPolicy
+          PolicyDocument:
+            Version: '2012-10-17'
+            Statement:
+              - Effect: Allow
+                Action:
+                  - ec2:CreateImage
+                  - ec2:DescribeImages
+                  - ec2:DescribeInstances
+                  - autoscaling:DescribeAutoScalingGroups
+                Resource: '*'
+              - Effect: Allow
+                Action:
+                  - s3:PutObject
+                  - s3:GetObject
+                Resource: !Sub '${BackupBucket}/*'
+
+  # Weekly Application Backup Schedule
+  ApplicationBackupRule:
+    Type: AWS::Events::Rule
+    Properties:
+      Description: 'Weekly application backup schedule'
+      ScheduleExpression: 'cron(0 3 ? * SUN *)'  # Weekly on Sunday at 3 AM UTC
+      State: ENABLED
+      Targets:
+        - Arn: !GetAtt ApplicationBackupFunction.Arn
+          Id: ApplicationBackupTarget
+
+  ApplicationBackupPermission:
+    Type: AWS::Lambda::Permission
+    Properties:
+      Action: lambda:InvokeFunction
+      FunctionName: !Ref ApplicationBackupFunction
+      Principal: events.amazonaws.com
+      SourceArn: !GetAtt ApplicationBackupRule.Arn
+
+  # Disaster Recovery Documentation
+  DisasterRecoveryPlan:
+    Type: AWS::SSM::Document
+    Properties:
+      DocumentType: Command
+      DocumentFormat: YAML
+      Name: !Sub '${Environment}-DealershipAI-DR-Plan'
+      Content:
+        schemaVersion: '2.2'
+        description: 'Disaster Recovery Plan for DealershipAI'
+        mainSteps:
+          - action: 'aws:runShellScript'
+            name: 'DisasterRecoverySteps'
+            inputs:
+              runCommand:
+                - echo "DealershipAI Disaster Recovery Plan"
+                - echo "=================================="
+                - echo "1. Identify latest RDS snapshot"
+                - echo "2. Restore RDS instance from snapshot"
+                - echo "3. Identify latest AMI backup"
+                - echo "4. Launch new instances from AMI"
+                - echo "5. Update Load Balancer targets"
+                - echo "6. Verify application health"
+                - echo "7. Update DNS records if needed"
+
+Outputs:
+  SSLCertificateArn:
+    Description: SSL Certificate ARN
+    Value: !Ref SSLCertificate
+    Export:
+      Name: !Sub '${AWS::StackName}-SSLCertificateArn'
+
+  HostedZoneId:
+    Description: Route53 Hosted Zone ID
+    Value: !Ref HostedZone
+    Export:
+      Name: !Sub '${AWS::StackName}-HostedZoneId'
+
+  BackupBucketName:
+    Description: S3 Backup Bucket Name
+    Value: !Ref BackupBucket
+    Export:
+      Name: !Sub '${AWS::StackName}-BackupBucket'
+
+  NameServers:
+    Description: Name servers for domain configuration
+    Value: !Join [', ', !GetAtt HostedZone.NameServers]

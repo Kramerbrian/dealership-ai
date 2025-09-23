@@ -1,0 +1,163 @@
+name: 🧪 Staging Deployment - DealershipAI
+
+on:
+  push:
+    branches: [develop, staging]
+    paths:
+      - 'apps/web/**'
+      - '.github/workflows/staging-deploy.yml'
+  pull_request:
+    branches: [develop]
+    paths:
+      - 'apps/web/**'
+  workflow_dispatch:
+
+env:
+  NODE_VERSION: '18'
+  PNPM_VERSION: '8'
+
+jobs:
+  build-and-deploy-staging:
+    name: 🏗️ Build & Deploy Staging
+    runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/develop' || github.ref == 'refs/heads/staging' || github.event_name == 'workflow_dispatch'
+
+    environment:
+      name: staging
+      url: ${{ steps.deploy.outputs.url }}
+
+    steps:
+      - name: 📥 Checkout code
+        uses: actions/checkout@v4
+
+      - name: 🏗️ Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'npm'
+
+      - name: 📦 Install pnpm
+        uses: pnpm/action-setup@v2
+        with:
+          version: ${{ env.PNPM_VERSION }}
+
+      - name: 🔧 Install dependencies
+        run: |
+          cd apps/web
+          pnpm install --frozen-lockfile
+
+      - name: 🧪 Run tests
+        run: |
+          cd apps/web
+          pnpm run test:unit
+        env:
+          NODE_ENV: test
+
+      - name: 🌍 Setup staging environment variables
+        run: |
+          cd apps/web
+          echo "NEXTAUTH_SECRET=${{ secrets.NEXTAUTH_SECRET_STAGING }}" >> .env.staging
+          echo "NEXTAUTH_URL=${{ secrets.NEXTAUTH_URL_STAGING }}" >> .env.staging
+          echo "DATABASE_URL=${{ secrets.DATABASE_URL_STAGING }}" >> .env.staging
+          echo "OPENAI_API_KEY=${{ secrets.OPENAI_API_KEY }}" >> .env.staging
+          echo "ANTHROPIC_API_KEY=${{ secrets.ANTHROPIC_API_KEY }}" >> .env.staging
+
+      - name: 🗄️ Run database migrations (staging)
+        run: |
+          cd apps/web
+          npx prisma migrate deploy
+          npx prisma generate
+        env:
+          DATABASE_URL: ${{ secrets.DATABASE_URL_STAGING }}
+
+      - name: 🏗️ Build application
+        run: |
+          cd apps/web
+          pnpm run build
+        env:
+          NODE_ENV: staging
+          DATABASE_URL: ${{ secrets.DATABASE_URL_STAGING }}
+          NEXTAUTH_SECRET: ${{ secrets.NEXTAUTH_SECRET_STAGING }}
+          NEXTAUTH_URL: ${{ secrets.NEXTAUTH_URL_STAGING }}
+
+      - name: 🚀 Deploy to Vercel (Staging)
+        id: deploy
+        uses: amondnet/vercel-action@v25
+        with:
+          vercel-token: ${{ secrets.VERCEL_TOKEN }}
+          vercel-org-id: ${{ secrets.VERCEL_ORG_ID }}
+          vercel-project-id: ${{ secrets.VERCEL_PROJECT_ID_STAGING }}
+          vercel-args: '--target staging'
+          working-directory: apps/web
+
+      - name: 🧪 Run E2E tests against staging
+        run: |
+          cd apps/web
+          STAGING_URL="${{ steps.deploy.outputs.url }}" pnpm run test:e2e
+        continue-on-error: true
+
+      - name: 📊 Performance testing
+        run: |
+          # Lighthouse CI or other performance testing tools
+          echo "Running performance tests against staging..."
+          echo "Staging URL: ${{ steps.deploy.outputs.url }}"
+
+      - name: 💬 PR Comment with deployment info
+        if: github.event_name == 'pull_request'
+        uses: actions/github-script@v6
+        with:
+          script: |
+            github.rest.issues.createComment({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: `🚀 **Staging Deployment Complete**
+
+              **Preview URL:** ${{ steps.deploy.outputs.url }}
+              **Environment:** staging
+              **Commit:** ${context.sha.substr(0, 8)}
+
+              The changes have been deployed to staging and are ready for review!`
+            });
+
+  quality-gate:
+    name: 🚪 Quality Gate
+    runs-on: ubuntu-latest
+    if: github.event_name == 'pull_request'
+
+    steps:
+      - name: 📥 Checkout code
+        uses: actions/checkout@v4
+
+      - name: 🏗️ Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+
+      - name: 📦 Install pnpm
+        uses: pnpm/action-setup@v2
+        with:
+          version: ${{ env.PNPM_VERSION }}
+
+      - name: 🔧 Install dependencies
+        run: |
+          cd apps/web
+          pnpm install --frozen-lockfile
+
+      - name: 🔍 TypeScript check
+        run: |
+          cd apps/web
+          pnpm run type-check
+
+      - name: 🧹 Lint check
+        run: |
+          cd apps/web
+          pnpm run lint
+
+      - name: 🧪 Unit tests
+        run: |
+          cd apps/web
+          pnpm run test:unit
+
+      - name: ✅ Quality gate passed
+        run: echo "All quality checks passed! ✅"

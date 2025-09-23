@@ -1,0 +1,226 @@
+{
+  "test_timestamp": "2025-09-20T21:05:36.746150",
+  "dealership": {
+    "name": "Premier Auto Group",
+    "location": "Springfield, IL"
+  },
+  "platform_visibility": {
+    "baseline": {
+      "ChatGPT": {
+        "mentioned": false,
+        "ranking_position": null,
+        "authority_signals": 0,
+        "query_success_rate": 0.1
+      },
+      "Perplexity": {
+        "mentioned": true,
+        "ranking_position": 8,
+        "authority_signals": 1,
+        "query_success_rate": 0.2
+      },
+      "Gemini": {
+        "mentioned": false,
+        "ranking_position": null,
+        "authority_signals": 0,
+        "query_success_rate": 0.0
+      },
+      "Microsoft Copilot": {
+        "mentioned": true,
+        "ranking_position": 12,
+        "authority_signals": 1,
+        "query_success_rate": 0.1
+      }
+    },
+    "improved": {
+      "ChatGPT": {
+        "mentioned": true,
+        "ranking_position": 3,
+        "authority_signals": 5,
+        "query_success_rate": 0.7
+      },
+      "Perplexity": {
+        "mentioned": true,
+        "ranking_position": 2,
+        "authority_signals": 6,
+        "query_success_rate": 0.8
+      },
+      "Gemini": {
+        "mentioned": true,
+        "ranking_position": 4,
+        "authority_signals": 4,
+        "query_success_rate": 0.6
+      },
+      "Microsoft Copilot": {
+        "mentioned": true,
+        "ranking_position": 3,
+        "authority_signals": 5,
+        "query_success_rate": 0.7
+      }
+    },
+    "test_queries": [
+      "Best auto dealership in Springfield, IL",
+      "Certified mechanics near Springfield, IL",
+      "Award winning car dealer Springfield, IL",
+      "Premier Auto Group reviews and ratings",
+      "Expert automotive service Springfield, IL",
+      "Dealership certifications Springfield, IL",
+      "Experienced car dealers near me",
+      "Premier Auto Group staff expertise",
+      "Automotive awards Springfield, IL",
+      "Trusted dealership Springfield, IL"
+    ],
+    "improvement_summary": {
+      "ChatGPT": {
+        "visibility_gained": true,
+        "ranking_improvement": 10,
+        "authority_signals_added": 5,
+        "query_success_improvement": 0.6
+      },
+      "Perplexity": {
+        "visibility_gained": false,
+        "ranking_improvement": 6,
+        "authority_signals_added": 5,
+        "query_success_improvement": 0.6000000000000001
+      },
+      "Gemini": {
+        "visibility_gained": true,
+        "ranking_improvement": 10,
+        "authority_signals_added": 4,
+        "query_success_improvement": 0.6
+      },
+      "Microsoft Copilot": {
+        "visibility_gained": false,
+        "ranking_improvement": 9,
+        "authority_signals_added": 4,
+        "query_success_improvement": 0.6
+      }
+    }
+  },
+  "authority_signal_recognition": {
+    "detailed_results": {
+      "certifications": {
+        "ASE_certified_mechanics": {
+          "ChatGPT": true,
+          "Perplexity": true,
+          "Gemini": true,
+          "Microsoft Copilot": true
+        },
+        "manufacturer_certifications": {
+          "ChatGPT": true,
+          "Perplexity": true,
+          "Gemini": false,
+          "Microsoft Copilot": true
+        },
+        "business_accreditations": {
+          "ChatGPT": false,
+          "Perplexity": true,
+          "Gemini": false,
+          "Microsoft Copilot": false
+        }
+      },
+      "awards": {
+        "dealer_of_year": {
+          "ChatGPT": true,
+          "Perplexity": true,
+          "Gemini": true,
+          "Microsoft Copilot": true
+        },
+        "customer_service_awards": {
+          "ChatGPT": true,
+          "Perplexity": true,
+          "Gemini": false,
+          "Microsoft Copilot": true
+        }
+      },
+      "expert_staff": {
+        "certified_technicians": {
+          "ChatGPT": true,
+          "Perplexity": true,
+          "Gemini": true,
+          "Microsoft Copilot": true
+        },
+        "management_experience": {
+          "ChatGPT": false,
+          "Perplexity": true,
+          "Gemini": false,
+          "Microsoft Copilot": false
+        }
+      }
+    },
+    "platform_summary": {
+      "certifications": {
+        "ChatGPT": {
+          "recognized_count": 2,
+          "total_signals": 3,
+          "recognition_rate": 0.6666666666666666
+        },
+        "Perplexity": {
+          "recognized_count": 3,
+          "total_signals": 3,
+          "recognition_rate": 1.0
+        },
+        "Gemini": {
+          "recognized_count": 1,
+          "total_signals": 3,
+          "recognition_rate": 0.3333333333333333
+        },
+        "Microsoft Copilot": {
+          "recognized_count": 2,
+          "total_signals": 3,
+          "recognition_rate": 0.6666666666666666
+        }
+      },
+      "awards": {
+        "ChatGPT": {
+          "recognized_count": 2,
+          "total_signals": 2,
+          "recognition_rate": 1.0
+        },
+        "Perplexity": {
+          "recognized_count": 2,
+          "total_signals": 2,
+          "recognition_rate": 1.0
+        },
+        "Gemini": {
+          "recognized_count": 1,
+          "total_signals": 2,
+          "recognition_rate": 0.5
+        },
+        "Microsoft Copilot": {
+          "recognized_count": 2,
+          "total_signals": 2,
+          "recognition_rate": 1.0
+        }
+      },
+      "expert_staff": {
+        "ChatGPT": {
+          "recognized_count": 1,
+          "total_signals": 2,
+          "recognition_rate": 0.5
+        },
+        "Perplexity": {
+          "recognized_count": 2,
+          "total_signals": 2,
+          "recognition_rate": 1.0
+        },
+        "Gemini": {
+          "recognized_count": 1,
+          "total_signals": 2,
+          "recognition_rate": 0.5
+        },
+        "Microsoft Copilot": {
+          "recognized_count": 1,
+          "total_signals": 2,
+          "recognition_rate": 0.5
+        }
+      }
+    }
+  },
+  "recommendations": [],
+  "overall_improvement": {
+    "platforms_with_visibility": 4,
+    "average_ranking_improvement": 6.25,
+    "authority_signals_recognized": 85,
+    "query_success_rate": 0.7
+  }
+}
