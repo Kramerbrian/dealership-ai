@@ -1,0 +1,325 @@
+name: 🚀 Production Deployment - DealershipAI
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'apps/web/**'
+      - '.github/workflows/production-deploy.yml'
+  pull_request:
+    branches: [main]
+    paths:
+      - 'apps/web/**'
+      - '.github/workflows/production-deploy.yml'
+  workflow_dispatch:
+    inputs:
+      environment:
+        description: 'Deployment environment'
+        required: true
+        default: 'production'
+        type: choice
+        options:
+          - staging
+          - production
+
+env:
+  NODE_VERSION: '18'
+  PNPM_VERSION: '8'
+
+jobs:
+  quality-checks:
+    name: 🔍 Code Quality & Security
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: 📥 Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: 🏗️ Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'npm'
+
+      - name: 📦 Install pnpm
+        uses: pnpm/action-setup@v2
+        with:
+          version: ${{ env.PNPM_VERSION }}
+
+      - name: 🔧 Install dependencies
+        run: |
+          cd apps/web
+          pnpm install --frozen-lockfile
+
+      - name: 🔍 TypeScript check
+        run: |
+          cd apps/web
+          pnpm run type-check
+
+      - name: 🧹 ESLint check
+        run: |
+          cd apps/web
+          pnpm run lint
+
+      - name: 🎨 Prettier check
+        run: |
+          cd apps/web
+          pnpm run format:check
+
+      - name: 🔒 Security audit
+        run: |
+          cd apps/web
+          pnpm audit --audit-level moderate
+        continue-on-error: true
+
+      - name: 🛡️ SAST Security Scan
+        uses: github/super-linter@v5
+        env:
+          DEFAULT_BRANCH: main
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          VALIDATE_TYPESCRIPT_ES: true
+          VALIDATE_JAVASCRIPT_ES: true
+          VALIDATE_JSON: true
+          VALIDATE_YAML: true
+
+  test-suite:
+    name: 🧪 Test Suite
+    runs-on: ubuntu-latest
+    needs: quality-checks
+
+    services:
+      postgres:
+        image: postgres:15
+        env:
+          POSTGRES_PASSWORD: test_password
+          POSTGRES_DB: dealershipai_test
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+        ports:
+          - 5432:5432
+
+    steps:
+      - name: 📥 Checkout code
+        uses: actions/checkout@v4
+
+      - name: 🏗️ Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'npm'
+
+      - name: 📦 Install pnpm
+        uses: pnpm/action-setup@v2
+        with:
+          version: ${{ env.PNPM_VERSION }}
+
+      - name: 🔧 Install dependencies
+        run: |
+          cd apps/web
+          pnpm install --frozen-lockfile
+
+      - name: 🗄️ Setup test database
+        run: |
+          cd apps/web
+          export DATABASE_URL="postgresql://postgres:test_password@localhost:5432/dealershipai_test"
+          npx prisma migrate deploy
+          npx prisma generate
+        env:
+          DATABASE_URL: postgresql://postgres:test_password@localhost:5432/dealershipai_test
+
+      - name: 🧪 Run unit tests
+        run: |
+          cd apps/web
+          pnpm run test:unit
+        env:
+          DATABASE_URL: postgresql://postgres:test_password@localhost:5432/dealershipai_test
+
+      - name: 🔗 Run integration tests
+        run: |
+          cd apps/web
+          pnpm run test:integration
+        env:
+          DATABASE_URL: postgresql://postgres:test_password@localhost:5432/dealershipai_test
+          NEXTAUTH_SECRET: test_secret_key_32_characters_long
+          NEXTAUTH_URL: http://localhost:3000
+
+      - name: 📊 Upload test coverage
+        uses: codecov/codecov-action@v3
+        with:
+          file: ./apps/web/coverage/lcov.info
+          flags: unittests
+          name: dealershipai-coverage
+
+  build-and-deploy:
+    name: 🏗️ Build & Deploy
+    runs-on: ubuntu-latest
+    needs: [quality-checks, test-suite]
+    if: github.ref == 'refs/heads/main' || github.event_name == 'workflow_dispatch'
+
+    environment:
+      name: ${{ github.event.inputs.environment || 'production' }}
+      url: ${{ steps.deploy.outputs.url }}
+
+    steps:
+      - name: 📥 Checkout code
+        uses: actions/checkout@v4
+
+      - name: 🏗️ Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'npm'
+
+      - name: 📦 Install pnpm
+        uses: pnpm/action-setup@v2
+        with:
+          version: ${{ env.PNPM_VERSION }}
+
+      - name: 🔧 Install dependencies
+        run: |
+          cd apps/web
+          pnpm install --frozen-lockfile
+
+      - name: 🌍 Setup environment variables
+        run: |
+          cd apps/web
+          echo "NEXTAUTH_SECRET=${{ secrets.NEXTAUTH_SECRET }}" >> .env.production
+          echo "NEXTAUTH_URL=${{ secrets.NEXTAUTH_URL }}" >> .env.production
+          echo "DATABASE_URL=${{ secrets.DATABASE_URL }}" >> .env.production
+          echo "OPENAI_API_KEY=${{ secrets.OPENAI_API_KEY }}" >> .env.production
+          echo "ANTHROPIC_API_KEY=${{ secrets.ANTHROPIC_API_KEY }}" >> .env.production
+          echo "SENTRY_DSN=${{ secrets.SENTRY_DSN }}" >> .env.production
+
+      - name: 🗄️ Database migrations
+        run: |
+          cd apps/web
+          npx prisma migrate deploy
+          npx prisma generate
+        env:
+          DATABASE_URL: ${{ secrets.DATABASE_URL }}
+
+      - name: 🏗️ Build application
+        run: |
+          cd apps/web
+          pnpm run build
+        env:
+          NODE_ENV: production
+          DATABASE_URL: ${{ secrets.DATABASE_URL }}
+          NEXTAUTH_SECRET: ${{ secrets.NEXTAUTH_SECRET }}
+          NEXTAUTH_URL: ${{ secrets.NEXTAUTH_URL }}
+
+      - name: 🔍 Bundle analyzer
+        run: |
+          cd apps/web
+          pnpm run analyze
+        continue-on-error: true
+
+      - name: 🚀 Deploy to Vercel
+        id: deploy
+        uses: amondnet/vercel-action@v25
+        with:
+          vercel-token: ${{ secrets.VERCEL_TOKEN }}
+          vercel-org-id: ${{ secrets.VERCEL_ORG_ID }}
+          vercel-project-id: ${{ secrets.VERCEL_PROJECT_ID }}
+          vercel-args: '--prod'
+          working-directory: apps/web
+
+      - name: 🏷️ Create release tag
+        if: github.ref == 'refs/heads/main'
+        run: |
+          git config --local user.email "action@github.com"
+          git config --local user.name "GitHub Action"
+          TAG="v$(date +'%Y%m%d-%H%M%S')"
+          git tag $TAG
+          git push origin $TAG
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+  health-checks:
+    name: 🏥 Health Checks
+    runs-on: ubuntu-latest
+    needs: build-and-deploy
+    if: github.ref == 'refs/heads/main' || github.event_name == 'workflow_dispatch'
+
+    steps:
+      - name: 🔍 API Health Check
+        run: |
+          sleep 30 # Wait for deployment to be ready
+          curl -f ${{ secrets.NEXTAUTH_URL }}/api/health || exit 1
+
+      - name: 🧪 Smoke Tests
+        run: |
+          # Test critical API endpoints
+          curl -f ${{ secrets.NEXTAUTH_URL }}/api/dashboard/enhanced || exit 1
+          curl -f ${{ secrets.NEXTAUTH_URL }}/api/pilot/toyota-naples || exit 1
+          curl -f ${{ secrets.NEXTAUTH_URL }}/api/analytics/predictions || exit 1
+
+      - name: 📊 Performance Test
+        run: |
+          # Basic performance check
+          RESPONSE_TIME=$(curl -o /dev/null -s -w '%{time_total}' ${{ secrets.NEXTAUTH_URL }})
+          if (( $(echo "$RESPONSE_TIME > 3.0" | bc -l) )); then
+            echo "Warning: Response time is ${RESPONSE_TIME}s (>3s)"
+            exit 1
+          fi
+          echo "✅ Response time: ${RESPONSE_TIME}s"
+
+  notify:
+    name: 📢 Deployment Notifications
+    runs-on: ubuntu-latest
+    needs: [build-and-deploy, health-checks]
+    if: always() && (github.ref == 'refs/heads/main' || github.event_name == 'workflow_dispatch')
+
+    steps:
+      - name: 🎉 Success Notification
+        if: needs.build-and-deploy.result == 'success' && needs.health-checks.result == 'success'
+        run: |
+          echo "🚀 DealershipAI successfully deployed to production!"
+          echo "Environment: ${{ github.event.inputs.environment || 'production' }}"
+          echo "Commit: ${{ github.sha }}"
+          echo "Deployed by: ${{ github.actor }}"
+
+      - name: ❌ Failure Notification
+        if: needs.build-and-deploy.result == 'failure' || needs.health-checks.result == 'failure'
+        run: |
+          echo "💥 Deployment failed!"
+          echo "Check the logs for details: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"
+          exit 1
+
+      - name: 📊 Deployment Metrics
+        if: needs.build-and-deploy.result == 'success'
+        run: |
+          # Send deployment metrics to monitoring service
+          curl -X POST "${{ secrets.DATADOG_API_ENDPOINT || 'https://api.datadoghq.com' }}/api/v1/events" \
+            -H "Content-Type: application/json" \
+            -H "DD-API-KEY: ${{ secrets.DATADOG_API_KEY }}" \
+            -d '{
+              "title": "DealershipAI Deployment",
+              "text": "Successfully deployed to production",
+              "tags": ["environment:production", "service:dealershipai"]
+            }' || echo "Failed to send metrics (continuing anyway)"
+
+  rollback:
+    name: 🔄 Rollback (Manual)
+    runs-on: ubuntu-latest
+    if: failure() && (github.ref == 'refs/heads/main' || github.event_name == 'workflow_dispatch')
+    environment: production
+
+    steps:
+      - name: 📥 Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: 🔄 Rollback deployment
+        run: |
+          echo "🔄 Initiating rollback procedure..."
+          echo "Manual intervention required to rollback Vercel deployment"
+          echo "Run: vercel --prod rollback <deployment-id>"
+        env:
+          VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}

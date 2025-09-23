@@ -1,0 +1,2194 @@
+{
+  "version": "1.0.0",
+  "name": "DealershipAI Enterprise Prompt Pack",
+  "description": "Comprehensive 40-prompt pack for automotive dealership visibility, reputation, and competitive intelligence",
+  "created_at": "2024-01-15T00:00:00Z",
+  "updated_at": "2024-01-15T00:00:00Z",
+  "prompts": [
+    {
+      "id": "visibility_basic_top5",
+      "title": "Basic Visibility Top 5 Check",
+      "category": "visibility_audit",
+      "intent": "buy",
+      "personas": ["car_buyer", "price_shopper"],
+      "language": "en",
+      "template": "Search for \"{{brand}} dealership near {{city}} {{state}}\" and list the top 5 results. Is {{dealer}} visible in the top 5? Compare their position against {{competitor_1}}, {{competitor_2}}, and {{competitor_3}}. Provide specific ranking positions and explain why each dealer appears where they do.",
+      "variables": [
+        {
+          "name": "brand",
+          "description": "Car brand/manufacturer",
+          "type": "string",
+          "required": true
+        },
+        {
+          "name": "dealer",
+          "description": "Target dealership name",
+          "type": "string",
+          "required": true
+        },
+        {
+          "name": "city",
+          "description": "City location",
+          "type": "string",
+          "required": true
+        },
+        {
+          "name": "state",
+          "description": "State abbreviation",
+          "type": "string",
+          "required": true
+        },
+        {
+          "name": "competitor_1",
+          "description": "Primary competitor name",
+          "type": "string",
+          "required": true
+        },
+        {
+          "name": "competitor_2",
+          "description": "Secondary competitor name",
+          "type": "string",
+          "required": true
+        },
+        {
+          "name": "competitor_3",
+          "description": "Tertiary competitor name",
+          "type": "string",
+          "required": true
+        }
+      ],
+      "engine_defaults": {
+        "engines": ["perplexity", "openai", "gemini"],
+        "temperature": 0.3,
+        "top_p": 0.9,
+        "max_tokens": 1500,
+        "timeout_ms": 30000
+      },
+      "rate_limit": {
+        "min_delay_ms": 2000,
+        "per_run_budget_cents": 300
+      },
+      "eval_signals": {
+        "position_weights": [1.0, 0.6, 0.3, 0.1, 0.05],
+        "citation_bonus": 0.2,
+        "locality_bonus_within_miles": 25,
+        "competitor_penalty_when_absent": -0.1
+      },
+      "output_schema_hint": {
+        "type": "object",
+        "properties": {
+          "rankings": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "position": { "type": "number" },
+                "dealer_name": { "type": "string" },
+                "url": { "type": "string" },
+                "snippet": { "type": "string" }
+              }
+            }
+          },
+          "target_dealer_found": { "type": "boolean" },
+          "target_dealer_position": { "type": "number" },
+          "competitors_visible": { "type": "array" }
+        }
+      },
+      "tags": ["basic", "visibility", "ranking"]
+    },
+    {
+      "id": "competition_crusher_compare",
+      "title": "Competition Crusher Comparison",
+      "category": "visibility_audit",
+      "intent": "buy",
+      "personas": ["informed_buyer", "comparison_shopper"],
+      "language": "en",
+      "template": "Compare {{dealer}} directly against {{competitor_1}} for the search \"best {{brand}} dealer {{city}}\". Who appears first? What advantages does the winner have? Look at reviews, website quality, local SEO signals, and Google Business Profile completeness. Give me the brutal truth about who's winning and why.",
+      "variables": [
+        {
+          "name": "dealer",
+          "description": "Target dealership name",
+          "type": "string",
+          "required": true
+        },
+        {
+          "name": "competitor_1",
+          "description": "Primary competitor name",
+          "type": "string",
+          "required": true
+        },
+        {
+          "name": "brand",
+          "description": "Car brand/manufacturer",
+          "type": "string",
+          "required": true
+        },
+        {
+          "name": "city",
+          "description": "City location",
+          "type": "string",
+          "required": true
+        }
+      ],
+      "engine_defaults": {
+        "engines": ["perplexity", "anthropic", "openai"],
+        "temperature": 0.7,
+        "top_p": 0.8,
+        "max_tokens": 2000,
+        "timeout_ms": 45000
+      },
+      "rate_limit": {
+        "min_delay_ms": 3000,
+        "per_run_budget_cents": 400
+      },
+      "eval_signals": {
+        "position_weights": [1.0, 0.6, 0.3],
+        "citation_bonus": 0.3,
+        "locality_bonus_within_miles": 30,
+        "competitor_penalty_when_absent": -0.2
+      },
+      "output_schema_hint": {
+        "type": "object",
+        "properties": {
+          "winner": { "type": "string" },
+          "target_position": { "type": "number" },
+          "competitor_position": { "type": "number" },
+          "winner_advantages": { "type": "array" },
+          "loser_weaknesses": { "type": "array" },
+          "recommendations": { "type": "array" }
+        }
+      },
+      "tags": ["competitive", "comparison", "analysis"]
+    },
+    {
+      "id": "brutal_honesty_test",
+      "title": "Brutal Honesty Reputation Test",
+      "category": "visibility_audit",
+      "intent": "meta",
+      "personas": ["skeptical_buyer", "research_oriented"],
+      "language": "en",
+      "template": "Search for \"{{dealer}} reviews problems complaints\" and \"{{dealer}} bad experience scam\". What are people actually saying? Don't sugarcoat it - give me the real reputation picture. Are there recurring themes in negative feedback? How does this compare to {{competitor_1}} when you search for their problems?",
+      "variables": [
+        {
+          "name": "dealer",
+          "description": "Target dealership name",
+          "type": "string",
+          "required": true
+        },
+        {
+          "name": "competitor_1",
+          "description": "Primary competitor name",
+          "type": "string",
+          "required": true
+        }
+      ],
+      "engine_defaults": {
+        "engines": ["perplexity", "anthropic"],
+        "temperature": 0.4,
+        "top_p": 0.9,
+        "max_tokens": 2500,
+        "timeout_ms": 60000
+      },
+      "rate_limit": {
+        "min_delay_ms": 5000,
+        "per_run_budget_cents": 500
+      },
+      "eval_signals": {
+        "position_weights": [1.0, 0.6, 0.3],
+        "citation_bonus": 0.4,
+        "locality_bonus_within_miles": 35,
+        "competitor_penalty_when_absent": 0.1
+      },
+      "output_schema_hint": {
+        "type": "object",
+        "properties": {
+          "negative_themes": { "type": "array" },
+          "severity_score": { "type": "number" },
+          "reputation_summary": { "type": "string" },
+          "competitor_comparison": { "type": "string" },
+          "risk_level": { "type": "string" }
+        }
+      },
+      "tags": ["reputation", "negative", "honest"]
+    },
+    {
+      "id": "brutal_comparison_table",
+      "title": "Brutal Comparison Table",
+      "category": "visibility_audit",
+      "intent": "buy",
+      "personas": ["analytical_buyer", "comparison_shopper"],
+      "language": "en",
+      "template": "Create a head-to-head comparison table for {{dealer}} vs {{competitor_1}} vs {{competitor_2}}. Compare: Google reviews (stars + count), website quality, inventory size, pricing transparency, service department ratings, and overall online presence. Use real data and be brutally honest about who wins each category.",
+      "variables": [
+        {
+          "name": "dealer",
+          "description": "Target dealership name",
+          "type": "string",
+          "required": true
+        },
+        {
+          "name": "competitor_1",
+          "description": "Primary competitor name",
+          "type": "string",
+          "required": true
+        },
+        {
+          "name": "competitor_2",
+          "description": "Secondary competitor name",
+          "type": "string",
+          "required": true
+        }
+      ],
+      "engine_defaults": {
+        "engines": ["perplexity", "openai", "gemini"],
+        "temperature": 0.2,
+        "top_p": 0.95,
+        "max_tokens": 3000,
+        "timeout_ms": 60000
+      },
+      "rate_limit": {
+        "min_delay_ms": 4000,
+        "per_run_budget_cents": 600
+      },
+      "eval_signals": {
+        "position_weights": [1.0, 0.6, 0.3],
+        "citation_bonus": 0.3,
+        "locality_bonus_within_miles": 30,
+        "competitor_penalty_when_absent": -0.15
+      },
+      "output_schema_hint": {
+        "type": "object",
+        "properties": {
+          "comparison_table": {
+            "type": "object",
+            "properties": {
+              "categories": { "type": "array" },
+              "dealers": { "type": "array" },
+              "scores": { "type": "object" }
+            }
+          },
+          "overall_winner": { "type": "string" },
+          "category_winners": { "type": "object" }
+        }
+      },
+      "tags": ["comparison", "table", "comprehensive"]
+    },
+    {
+      "id": "final_boss_recommendation",
+      "title": "Final Boss Recommendation Engine",
+      "category": "visibility_audit",
+      "intent": "buy",
+      "personas": ["decision_maker", "final_stage_buyer"],
+      "language": "en",
+      "template": "I need to buy a {{model}} in {{city}}, {{state}}. Based on everything available online - reviews, inventory, pricing, service reputation, and overall trustworthiness - which dealership should I choose: {{dealer}}, {{competitor_1}}, or {{competitor_2}}? Give me your final recommendation with solid reasoning.",
+      "variables": [
+        {
+          "name": "model",
+          "description": "Specific car model",
+          "type": "string",
+          "required": true
+        },
+        {
+          "name": "city",
+          "description": "City location",
+          "type": "string",
+          "required": true
+        },
+        {
+          "name": "state",
+          "description": "State abbreviation",
+          "type": "string",
+          "required": true
+        },
+        {
+          "name": "dealer",
+          "description": "Target dealership name",
+          "type": "string",
+          "required": true
+        },
+        {
+          "name": "competitor_1",
+          "description": "Primary competitor name",
+          "type": "string",
+          "required": true
+        },
+        {
+          "name": "competitor_2",
+          "description": "Secondary competitor name",
+          "type": "string",
+          "required": true
+        }
+      ],
+      "engine_defaults": {
+        "engines": ["anthropic", "openai", "perplexity"],
+        "temperature": 0.6,
+        "top_p": 0.9,
+        "max_tokens": 2000,
+        "timeout_ms": 45000
+      },
+      "rate_limit": {
+        "min_delay_ms": 3000,
+        "per_run_budget_cents": 500
+      },
+      "eval_signals": {
+        "position_weights": [1.0, 0.6, 0.3],
+        "citation_bonus": 0.5,
+        "locality_bonus_within_miles": 25,
+        "competitor_penalty_when_absent": -0.3
+      },
+      "output_schema_hint": {
+        "type": "object",
+        "properties": {
+          "recommended_dealer": { "type": "string" },
+          "confidence_score": { "type": "number" },
+          "key_reasons": { "type": "array" },
+          "warnings": { "type": "array" },
+          "alternative_choice": { "type": "string" }
+        }
+      },
+      "tags": ["recommendation", "decision", "final"]
+    },
+    {
+      "id": "spanish_visibility_check",
+      "title": "Spanish Language Visibility Check",
+      "category": "visibility_audit",
+      "intent": "buy",
+      "personas": ["hispanic_buyer", "spanish_speaker"],
+      "language": "es",
+      "template": "Busca \"concesionario {{brand}} cerca de {{city}} {{state}}\" y \"{{brand}} {{city}} precio\". ¿Aparece {{dealer}} en los primeros resultados? ¿Tienen contenido en español en su sitio web? ¿Cómo se compara con {{competitor_1}} para clientes que hablan español?",
+      "variables": [
+        {
+          "name": "brand",
+          "description": "Car brand/manufacturer",
+          "type": "string",
+          "required": true
+        },
+        {
+          "name": "dealer",
+          "description": "Target dealership name",
+          "type": "string",
+          "required": true
+        },
+        {
+          "name": "city",
+          "description": "City location",
+          "type": "string",
+          "required": true
+        },
+        {
+          "name": "state",
+          "description": "State abbreviation",
+          "type": "string",
+          "required": true
+        },
+        {
+          "name": "competitor_1",
+          "description": "Primary competitor name",
+          "type": "string",
+          "required": true
+        }
+      ],
+      "engine_defaults": {
+        "engines": ["openai", "anthropic", "gemini"],
+        "temperature": 0.4,
+        "top_p": 0.9,
+        "max_tokens": 1800,
+        "timeout_ms": 40000
+      },
+      "rate_limit": {
+        "min_delay_ms": 2500,
+        "per_run_budget_cents": 400
+      },
+      "eval_signals": {
+        "position_weights": [1.0, 0.6, 0.3],
+        "citation_bonus": 0.3,
+        "locality_bonus_within_miles": 30,
+        "competitor_penalty_when_absent": -0.2
+      },
+      "output_schema_hint": {
+        "type": "object",
+        "properties": {
+          "spanish_visibility": { "type": "boolean" },
+          "spanish_content_quality": { "type": "number" },
+          "position_spanish_search": { "type": "number" },
+          "competitor_comparison": { "type": "string" }
+        }
+      },
+      "tags": ["spanish", "multilingual", "hispanic"]
+    },
+    {
+      "id": "reddit_disaster_check",
+      "title": "Reddit Disaster Check",
+      "category": "reputation",
+      "intent": "meta",
+      "personas": ["skeptical_buyer", "research_oriented"],
+      "language": "en",
+      "template": "Search Reddit for mentions of {{dealer}} and {{city}} {{brand}} dealerships. Look specifically in r/cars, r/{{city}}, and automotive subreddits. Are there any horror stories, scam reports, or major complaints? What's the real street-level reputation? Compare to mentions of {{competitor_1}}.",
+      "variables": [
+        {
+          "name": "dealer",
+          "description": "Target dealership name",
+          "type": "string",
+          "required": true
+        },
+        {
+          "name": "city",
+          "description": "City location",
+          "type": "string",
+          "required": true
+        },
+        {
+          "name": "brand",
+          "description": "Car brand/manufacturer",
+          "type": "string",
+          "required": true
+        },
+        {
+          "name": "competitor_1",
+          "description": "Primary competitor name",
+          "type": "string",
+          "required": true
+        }
+      ],
+      "engine_defaults": {
+        "engines": ["perplexity", "anthropic"],
+        "temperature": 0.3,
+        "top_p": 0.9,
+        "max_tokens": 2200,
+        "timeout_ms": 50000
+      },
+      "rate_limit": {
+        "min_delay_ms": 4000,
+        "per_run_budget_cents": 450
+      },
+      "eval_signals": {
+        "position_weights": [1.0, 0.6, 0.3],
+        "citation_bonus": 0.4,
+        "locality_bonus_within_miles": 35,
+        "competitor_penalty_when_absent": 0.1
+      },
+      "output_schema_hint": {
+        "type": "object",
+        "properties": {
+          "reddit_mentions": { "type": "number" },
+          "sentiment_score": { "type": "number" },
+          "horror_stories": { "type": "array" },
+          "positive_mentions": { "type": "array" },
+          "competitor_comparison": { "type": "string" }
+        }
+      },
+      "tags": ["reddit", "reputation", "social"]
+    },
+    {
+      "id": "hidden_fee_expose",
+      "title": "Hidden Fee Exposure Test",
+      "category": "reputation",
+      "intent": "buy",
+      "personas": ["price_conscious", "skeptical_buyer"],
+      "language": "en",
+      "template": "Search for \"{{dealer}} hidden fees\" and \"{{dealer}} additional charges markup\". What do customers complain about regarding unexpected costs? Are there doc fees, dealer add-ons, or markup issues mentioned online? How transparent is their pricing compared to {{competitor_1}}?",
+      "variables": [
+        {
+          "name": "dealer",
+          "description": "Target dealership name",
+          "type": "string",
+          "required": true
+        },
+        {
+          "name": "competitor_1",
+          "description": "Primary competitor name",
+          "type": "string",
+          "required": true
+        }
+      ],
+      "engine_defaults": {
+        "engines": ["perplexity", "openai"],
+        "temperature": 0.4,
+        "top_p": 0.9,
+        "max_tokens": 1800,
+        "timeout_ms": 40000
+      },
+      "rate_limit": {
+        "min_delay_ms": 3000,
+        "per_run_budget_cents": 350
+      },
+      "eval_signals": {
+        "position_weights": [1.0, 0.6, 0.3],
+        "citation_bonus": 0.3,
+        "locality_bonus_within_miles": 30,
+        "competitor_penalty_when_absent": 0.0
+      },
+      "output_schema_hint": {
+        "type": "object",
+        "properties": {
+          "hidden_fee_complaints": { "type": "array" },
+          "pricing_transparency_score": { "type": "number" },
+          "common_extra_charges": { "type": "array" },
+          "competitor_comparison": { "type": "string" }
+        }
+      },
+      "tags": ["fees", "pricing", "transparency"]
+    },
+    {
+      "id": "social_sentiment_analysis",
+      "title": "Social Media Sentiment Analysis",
+      "category": "reputation",
+      "intent": "meta",
+      "personas": ["social_media_user", "millennial_buyer"],
+      "language": "en",
+      "template": "Analyze social media sentiment for {{dealer}} across Facebook, Instagram, Twitter, and Google reviews. What's the overall tone? Are customers happy with their experience? Look at recent posts and comments. Compare the social presence and engagement quality to {{competitor_1}}.",
+      "variables": [
+        {
+          "name": "dealer",
+          "description": "Target dealership name",
+          "type": "string",
+          "required": true
+        },
+        {
+          "name": "competitor_1",
+          "description": "Primary competitor name",
+          "type": "string",
+          "required": true
+        }
+      ],
+      "engine_defaults": {
+        "engines": ["openai", "anthropic", "perplexity"],
+        "temperature": 0.5,
+        "top_p": 0.9,
+        "max_tokens": 2000,
+        "timeout_ms": 45000
+      },
+      "rate_limit": {
+        "min_delay_ms": 3500,
+        "per_run_budget_cents": 400
+      },
+      "eval_signals": {
+        "position_weights": [1.0, 0.6, 0.3],
+        "citation_bonus": 0.2,
+        "locality_bonus_within_miles": 30,
+        "competitor_penalty_when_absent": -0.1
+      },
+      "output_schema_hint": {
+        "type": "object",
+        "properties": {
+          "overall_sentiment": { "type": "string" },
+          "sentiment_score": { "type": "number" },
+          "platform_breakdown": { "type": "object" },
+          "engagement_quality": { "type": "number" },
+          "competitor_comparison": { "type": "string" }
+        }
+      },
+      "tags": ["social", "sentiment", "engagement"]
+    },
+    {
+      "id": "ai_optimization_audit",
+      "title": "AI Search Optimization Audit",
+      "category": "zero_click",
+      "intent": "meta",
+      "personas": ["tech_savvy", "ai_user"],
+      "language": "en",
+      "template": "How well does {{dealer}} appear in AI-powered search results? Test queries like \"best {{brand}} dealer near {{city}}\" in ChatGPT, Claude, and Perplexity. Are they mentioned in AI recommendations? What information do AI engines have about them vs {{competitor_1}}?",
+      "variables": [
+        {
+          "name": "dealer",
+          "description": "Target dealership name",
+          "type": "string",
+          "required": true
+        },
+        {
+          "name": "brand",
+          "description": "Car brand/manufacturer",
+          "type": "string",
+          "required": true
+        },
+        {
+          "name": "city",
+          "description": "City location",
+          "type": "string",
+          "required": true
+        },
+        {
+          "name": "competitor_1",
+          "description": "Primary competitor name",
+          "type": "string",
+          "required": true
+        }
+      ],
+      "engine_defaults": {
+        "engines": ["perplexity", "anthropic", "openai"],
+        "temperature": 0.3,
+        "top_p": 0.9,
+        "max_tokens": 1800,
+        "timeout_ms": 35000
+      },
+      "rate_limit": {
+        "min_delay_ms": 2000,
+        "per_run_budget_cents": 300
+      },
+      "eval_signals": {
+        "position_weights": [1.0, 0.8, 0.5],
+        "citation_bonus": 0.6,
+        "locality_bonus_within_miles": 30,
+        "competitor_penalty_when_absent": -0.2
+      },
+      "output_schema_hint": {
+        "type": "object",
+        "properties": {
+          "ai_visibility_score": { "type": "number" },
+          "mentions_by_ai": { "type": "object" },
+          "recommendation_frequency": { "type": "number" },
+          "competitor_comparison": { "type": "string" }
+        }
+      },
+      "tags": ["ai", "optimization", "zero-click"]
+    },
+    {
+      "id": "trust_signal_optimizer",
+      "title": "Trust Signal Optimization Check",
+      "category": "zero_click",
+      "intent": "meta",
+      "personas": ["cautious_buyer", "trust_focused"],
+      "language": "en",
+      "template": "Evaluate {{dealer}}'s trust signals: Better Business Bureau rating, manufacturer certifications, awards, years in business, and online credentials. What trust indicators appear in search results? How do these stack up against {{competitor_1}} and {{competitor_2}}?",
+      "variables": [
+        {
+          "name": "dealer",
+          "description": "Target dealership name",
+          "type": "string",
+          "required": true
+        },
+        {
+          "name": "competitor_1",
+          "description": "Primary competitor name",
+          "type": "string",
+          "required": true
+        },
+        {
+          "name": "competitor_2",
+          "description": "Secondary competitor name",
+          "type": "string",
+          "required": true
+        }
+      ],
+      "engine_defaults": {
+        "engines": ["openai", "perplexity", "gemini"],
+        "temperature": 0.2,
+        "top_p": 0.9,
+        "max_tokens": 1600,
+        "timeout_ms": 30000
+      },
+      "rate_limit": {
+        "min_delay_ms": 2500,
+        "per_run_budget_cents": 280
+      },
+      "eval_signals": {
+        "position_weights": [1.0, 0.6, 0.3],
+        "citation_bonus": 0.4,
+        "locality_bonus_within_miles": 30,
+        "competitor_penalty_when_absent": -0.1
+      },
+      "output_schema_hint": {
+        "type": "object",
+        "properties": {
+          "trust_score": { "type": "number" },
+          "trust_signals_found": { "type": "array" },
+          "certifications": { "type": "array" },
+          "bbb_rating": { "type": "string" },
+          "competitor_trust_comparison": { "type": "object" }
+        }
+      },
+      "tags": ["trust", "credentials", "authority"]
+    },
+    {
+      "id": "authority_builder",
+      "title": "Industry Authority Assessment",
+      "category": "zero_click",
+      "intent": "meta",
+      "personas": ["expert_buyer", "industry_aware"],
+      "language": "en",
+      "template": "How is {{dealer}} positioned as an industry authority? Look for mentions in automotive publications, local business news, community involvement, and thought leadership content. Are they quoted as experts? Do they have awards or recognition that {{competitor_1}} doesn't?",
+      "variables": [
+        {
+          "name": "dealer",
+          "description": "Target dealership name",
+          "type": "string",
+          "required": true
+        },
+        {
+          "name": "competitor_1",
+          "description": "Primary competitor name",
+          "type": "string",
+          "required": true
+        }
+      ],
+      "engine_defaults": {
+        "engines": ["perplexity", "anthropic"],
+        "temperature": 0.4,
+        "top_p": 0.9,
+        "max_tokens": 1800,
+        "timeout_ms": 40000
+      },
+      "rate_limit": {
+        "min_delay_ms": 3000,
+        "per_run_budget_cents": 350
+      },
+      "eval_signals": {
+        "position_weights": [1.0, 0.6, 0.3],
+        "citation_bonus": 0.5,
+        "locality_bonus_within_miles": 30,
+        "competitor_penalty_when_absent": -0.15
+      },
+      "output_schema_hint": {
+        "type": "object",
+        "properties": {
+          "authority_score": { "type": "number" },
+          "media_mentions": { "type": "array" },
+          "awards_recognition": { "type": "array" },
+          "thought_leadership": { "type": "array" },
+          "competitor_comparison": { "type": "string" }
+        }
+      },
+      "tags": ["authority", "expertise", "recognition"]
+    },
+    {
+      "id": "zero_click_answer_hub",
+      "title": "Zero-Click Answer Optimization",
+      "category": "zero_click",
+      "intent": "meta",
+      "personas": ["quick_researcher", "mobile_user"],
+      "language": "en",
+      "template": "Test zero-click search queries: \"{{dealer}} hours\", \"{{dealer}} phone number\", \"{{dealer}} {{model}} price\", \"{{dealer}} service department\". What information appears directly in search results without clicking? How complete and accurate are the knowledge panels and featured snippets?",
+      "variables": [
+        {
+          "name": "dealer",
+          "description": "Target dealership name",
+          "type": "string",
+          "required": true
+        },
+        {
+          "name": "model",
+          "description": "Specific car model",
+          "type": "string",
+          "required": true
+        }
+      ],
+      "engine_defaults": {
+        "engines": ["perplexity", "openai"],
+        "temperature": 0.1,
+        "top_p": 0.9,
+        "max_tokens": 1500,
+        "timeout_ms": 25000
+      },
+      "rate_limit": {
+        "min_delay_ms": 1500,
+        "per_run_budget_cents": 200
+      },
+      "eval_signals": {
+        "position_weights": [1.0, 0.8, 0.5],
+        "citation_bonus": 0.7,
+        "locality_bonus_within_miles": 25,
+        "competitor_penalty_when_absent": 0.0
+      },
+      "output_schema_hint": {
+        "type": "object",
+        "properties": {
+          "zero_click_coverage": { "type": "number" },
+          "information_accuracy": { "type": "number" },
+          "missing_data_points": { "type": "array" },
+          "featured_snippet_presence": { "type": "boolean" }
+        }
+      },
+      "tags": ["zero-click", "featured-snippets", "quick-answers"]
+    },
+    {
+      "id": "multilingual_presence_check",
+      "title": "Multilingual Digital Presence",
+      "category": "zero_click",
+      "intent": "meta",
+      "personas": ["multilingual_buyer", "diverse_community"],
+      "language": "en",
+      "template": "Evaluate {{dealer}}'s presence across different languages. Search in Spanish, and other relevant local languages for \"{{brand}} concesionario {{city}}\". Do they have multilingual website content, translated reviews, and culturally relevant marketing? How does this compare to {{competitor_1}}?",
+      "variables": [
+        {
+          "name": "dealer",
+          "description": "Target dealership name",
+          "type": "string",
+          "required": true
+        },
+        {
+          "name": "brand",
+          "description": "Car brand/manufacturer",
+          "type": "string",
+          "required": true
+        },
+        {
+          "name": "city",
+          "description": "City location",
+          "type": "string",
+          "required": true
+        },
+        {
+          "name": "competitor_1",
+          "description": "Primary competitor name",
+          "type": "string",
+          "required": true
+        }
+      ],
+      "engine_defaults": {
+        "engines": ["openai", "gemini", "anthropic"],
+        "temperature": 0.3,
+        "top_p": 0.9,
+        "max_tokens": 1700,
+        "timeout_ms": 35000
+      },
+      "rate_limit": {
+        "min_delay_ms": 2500,
+        "per_run_budget_cents": 320
+      },
+      "eval_signals": {
+        "position_weights": [1.0, 0.6, 0.3],
+        "citation_bonus": 0.3,
+        "locality_bonus_within_miles": 30,
+        "competitor_penalty_when_absent": -0.1
+      },
+      "output_schema_hint": {
+        "type": "object",
+        "properties": {
+          "languages_supported": { "type": "array" },
+          "multilingual_score": { "type": "number" },
+          "cultural_relevance": { "type": "number" },
+          "competitor_comparison": { "type": "string" }
+        }
+      },
+      "tags": ["multilingual", "diversity", "cultural"]
+    },
+    {
+      "id": "local_seo_reality_check",
+      "title": "Local SEO Reality Check",
+      "category": "local_seo",
+      "intent": "buy",
+      "personas": ["local_buyer", "nearby_shopper"],
+      "language": "en",
+      "template": "Search \"{{brand}} dealer near me\" from {{city}}, {{state}}. Where does {{dealer}} rank in local results? Check Google Maps ranking, local pack visibility, and \"near me\" search performance. Are they optimized for local SEO better than {{competitor_1}} and {{competitor_2}}?",
+      "variables": [
+        {
+          "name": "brand",
+          "description": "Car brand/manufacturer",
+          "type": "string",
+          "required": true
+        },
+        {
+          "name": "dealer",
+          "description": "Target dealership name",
+          "type": "string",
+          "required": true
+        },
+        {
+          "name": "city",
+          "description": "City location",
+          "type": "string",
+          "required": true
+        },
+        {
+          "name": "state",
+          "description": "State abbreviation",
+          "type": "string",
+          "required": true
+        },
+        {
+          "name": "competitor_1",
+          "description": "Primary competitor name",
+          "type": "string",
+          "required": true
+        },
+        {
+          "name": "competitor_2",
+          "description": "Secondary competitor name",
+          "type": "string",
+          "required": true
+        }
+      ],
+      "engine_defaults": {
+        "engines": ["perplexity", "openai", "gemini"],
+        "temperature": 0.2,
+        "top_p": 0.9,
+        "max_tokens": 1600,
+        "timeout_ms": 30000
+      },
+      "rate_limit": {
+        "min_delay_ms": 2000,
+        "per_run_budget_cents": 300
+      },
+      "eval_signals": {
+        "position_weights": [1.0, 0.7, 0.4, 0.2],
+        "citation_bonus": 0.2,
+        "locality_bonus_within_miles": 20,
+        "competitor_penalty_when_absent": -0.2
+      },
+      "output_schema_hint": {
+        "type": "object",
+        "properties": {
+          "local_pack_position": { "type": "number" },
+          "maps_ranking": { "type": "number" },
+          "near_me_visibility": { "type": "boolean" },
+          "local_seo_score": { "type": "number" },
+          "competitor_positions": { "type": "object" }
+        }
+      },
+      "tags": ["local-seo", "near-me", "maps"]
+    },
+    {
+      "id": "map_pack_verdict",
+      "title": "Google Maps Pack Dominance Test",
+      "category": "local_seo",
+      "intent": "buy",
+      "personas": ["mobile_user", "map_user"],
+      "language": "en",
+      "template": "Focus specifically on Google Maps local pack results for \"{{brand}} {{city}}\". Is {{dealer}} in the top 3 map results? What's their Google Business Profile score, review count, and how do photos/posts compare to {{competitor_1}} and {{competitor_2}}? Who dominates the local pack and why?",
+      "variables": [
+        {
+          "name": "brand",
+          "description": "Car brand/manufacturer",
+          "type": "string",
+          "required": true
+        },
+        {
+          "name": "city",
+          "description": "City location",
+          "type": "string",
+          "required": true
+        },
+        {
+          "name": "dealer",
+          "description": "Target dealership name",
+          "type": "string",
+          "required": true
+        },
+        {
+          "name": "competitor_1",
+          "description": "Primary competitor name",
+          "type": "string",
+          "required": true
+        },
+        {
+          "name": "competitor_2",
+          "description": "Secondary competitor name",
+          "type": "string",
+          "required": true
+        }
+      ],
+      "engine_defaults": {
+        "engines": ["perplexity", "openai"],
+        "temperature": 0.3,
+        "top_p": 0.9,
+        "max_tokens": 1800,
+        "timeout_ms": 35000
+      },
+      "rate_limit": {
+        "min_delay_ms": 2500,
+        "per_run_budget_cents": 350
+      },
+      "eval_signals": {
+        "position_weights": [1.0, 0.8, 0.6],
+        "citation_bonus": 0.3,
+        "locality_bonus_within_miles": 15,
+        "competitor_penalty_when_absent": -0.25
+      },
+      "output_schema_hint": {
+        "type": "object",
+        "properties": {
+          "map_pack_position": { "type": "number" },
+          "gbp_score": { "type": "number" },
+          "review_count": { "type": "number" },
+          "photo_count": { "type": "number" },
+          "map_pack_winner": { "type": "string" }
+        }
+      },
+      "tags": ["maps", "local-pack", "gbp"]
+    },
+    {
+      "id": "apple_maps_vs_google",
+      "title": "Apple Maps vs Google Maps Visibility",
+      "category": "local_seo",
+      "intent": "buy",
+      "personas": ["iphone_user", "apple_user"],
+      "language": "en",
+      "template": "Compare {{dealer}}'s visibility in Apple Maps vs Google Maps for \"{{brand}} dealership {{city}}\". Are they listed in both? Which platform shows them more prominently? Check business information accuracy, reviews, and photos across both platforms. How do they compare to {{competitor_1}}?",
+      "variables": [
+        {
+          "name": "dealer",
+          "description": "Target dealership name",
+          "type": "string",
+          "required": true
+        },
+        {
+          "name": "brand",
+          "description": "Car brand/manufacturer",
+          "type": "string",
+          "required": true
+        },
+        {
+          "name": "city",
+          "description": "City location",
+          "type": "string",
+          "required": true
+        },
+        {
+          "name": "competitor_1",
+          "description": "Primary competitor name",
+          "type": "string",
+          "required": true
+        }
+      ],
+      "engine_defaults": {
+        "engines": ["openai", "perplexity"],
+        "temperature": 0.2,
+        "top_p": 0.9,
+        "max_tokens": 1500,
+        "timeout_ms": 30000
+      },
+      "rate_limit": {
+        "min_delay_ms": 2000,
+        "per_run_budget_cents": 280
+      },
+      "eval_signals": {
+        "position_weights": [1.0, 0.6, 0.3],
+        "citation_bonus": 0.2,
+        "locality_bonus_within_miles": 25,
+        "competitor_penalty_when_absent": -0.15
+      },
+      "output_schema_hint": {
+        "type": "object",
+        "properties": {
+          "apple_maps_position": { "type": "number" },
+          "google_maps_position": { "type": "number" },
+          "platform_comparison": { "type": "object" },
+          "information_accuracy": { "type": "object" }
+        }
+      },
+      "tags": ["apple-maps", "google-maps", "cross-platform"]
+    },
+    {
+      "id": "success_pattern_decoder",
+      "title": "Competitor Success Pattern Analysis",
+      "category": "competitive",
+      "intent": "meta",
+      "personas": ["strategic_thinker", "analyst"],
+      "language": "en",
+      "template": "Analyze what makes {{competitor_1}} successful online. What are they doing that {{dealer}} isn't? Look at their content strategy, review management, local SEO, social media, and website optimization. Identify 3-5 specific tactics {{dealer}} should copy immediately.",
+      "variables": [
+        {
+          "name": "competitor_1",
+          "description": "Primary competitor name",
+          "type": "string",
+          "required": true
+        },
+        {
+          "name": "dealer",
+          "description": "Target dealership name",
+          "type": "string",
+          "required": true
+        }
+      ],
+      "engine_defaults": {
+        "engines": ["anthropic", "openai", "perplexity"],
+        "temperature": 0.4,
+        "top_p": 0.9,
+        "max_tokens": 2200,
+        "timeout_ms": 45000
+      },
+      "rate_limit": {
+        "min_delay_ms": 3500,
+        "per_run_budget_cents": 450
+      },
+      "eval_signals": {
+        "position_weights": [1.0, 0.6, 0.3],
+        "citation_bonus": 0.0,
+        "locality_bonus_within_miles": 30,
+        "competitor_penalty_when_absent": 0.2
+      },
+      "output_schema_hint": {
+        "type": "object",
+        "properties": {
+          "success_factors": { "type": "array" },
+          "competitive_advantages": { "type": "array" },
+          "actionable_tactics": { "type": "array" },
+          "priority_recommendations": { "type": "array" }
+        }
+      },
+      "tags": ["competitive", "analysis", "strategy"]
+    },
+    {
+      "id": "weakness_finder",
+      "title": "Competitor Weakness Identification",
+      "category": "competitive",
+      "intent": "meta",
+      "personas": ["opportunistic", "strategic"],
+      "language": "en",
+      "template": "Find weaknesses and gaps in {{competitor_1}}'s online presence that {{dealer}} can exploit. Look for missing services, poor reviews, outdated website content, weak social media, or bad user experience. What opportunities exist to outrank them?",
+      "variables": [
+        {
+          "name": "competitor_1",
+          "description": "Primary competitor name",
+          "type": "string",
+          "required": true
+        },
+        {
+          "name": "dealer",
+          "description": "Target dealership name",
+          "type": "string",
+          "required": true
+        }
+      ],
+      "engine_defaults": {
+        "engines": ["perplexity", "anthropic"],
+        "temperature": 0.5,
+        "top_p": 0.9,
+        "max_tokens": 2000,
+        "timeout_ms": 40000
+      },
+      "rate_limit": {
+        "min_delay_ms": 3000,
+        "per_run_budget_cents": 400
+      },
+      "eval_signals": {
+        "position_weights": [1.0, 0.6, 0.3],
+        "citation_bonus": 0.0,
+        "locality_bonus_within_miles": 30,
+        "competitor_penalty_when_absent": 0.3
+      },
+      "output_schema_hint": {
+        "type": "object",
+        "properties": {
+          "identified_weaknesses": { "type": "array" },
+          "opportunity_gaps": { "type": "array" },
+          "exploit_strategies": { "type": "array" },
+          "quick_wins": { "type": "array" }
+        }
+      },
+      "tags": ["weakness", "opportunity", "competitive"]
+    },
+    {
+      "id": "opportunity_spotter",
+      "title": "Market Opportunity Detection",
+      "category": "competitive",
+      "intent": "meta",
+      "personas": ["market_analyst", "opportunity_seeker"],
+      "language": "en",
+      "template": "Search for unmet needs in the {{city}} {{brand}} market. What are customers complaining about regarding ALL local dealerships including {{dealer}}, {{competitor_1}}, and {{competitor_2}}? What services or experiences are missing that could give {{dealer}} a competitive edge?",
+      "variables": [
+        {
+          "name": "city",
+          "description": "City location",
+          "type": "string",
+          "required": true
+        },
+        {
+          "name": "brand",
+          "description": "Car brand/manufacturer",
+          "type": "string",
+          "required": true
+        },
+        {
+          "name": "dealer",
+          "description": "Target dealership name",
+          "type": "string",
+          "required": true
+        },
+        {
+          "name": "competitor_1",
+          "description": "Primary competitor name",
+          "type": "string",
+          "required": true
+        },
+        {
+          "name": "competitor_2",
+          "description": "Secondary competitor name",
+          "type": "string",
+          "required": true
+        }
+      ],
+      "engine_defaults": {
+        "engines": ["anthropic", "perplexity", "openai"],
+        "temperature": 0.6,
+        "top_p": 0.9,
+        "max_tokens": 2100,
+        "timeout_ms": 50000
+      },
+      "rate_limit": {
+        "min_delay_ms": 4000,
+        "per_run_budget_cents": 500
+      },
+      "eval_signals": {
+        "position_weights": [1.0, 0.6, 0.3],
+        "citation_bonus": 0.1,
+        "locality_bonus_within_miles": 25,
+        "competitor_penalty_when_absent": 0.0
+      },
+      "output_schema_hint": {
+        "type": "object",
+        "properties": {
+          "market_gaps": { "type": "array" },
+          "customer_pain_points": { "type": "array" },
+          "unmet_needs": { "type": "array" },
+          "opportunity_score": { "type": "number" }
+        }
+      },
+      "tags": ["opportunity", "market-gaps", "innovation"]
+    },
+    {
+      "id": "damage_assessment",
+      "title": "Reputation Damage Assessment",
+      "category": "crisis",
+      "intent": "meta",
+      "personas": ["crisis_manager", "reputation_focused"],
+      "language": "en",
+      "template": "Assess potential reputation damage for {{dealer}}. Search for recent negative news, scandal mentions, legal issues, or viral complaints. How bad is the situation compared to normal business complaints? Is there ongoing crisis coverage that needs immediate attention?",
+      "variables": [
+        {
+          "name": "dealer",
+          "description": "Target dealership name",
+          "type": "string",
+          "required": true
+        }
+      ],
+      "engine_defaults": {
+        "engines": ["perplexity", "anthropic"],
+        "temperature": 0.2,
+        "top_p": 0.9,
+        "max_tokens": 1800,
+        "timeout_ms": 40000
+      },
+      "rate_limit": {
+        "min_delay_ms": 3000,
+        "per_run_budget_cents": 350
+      },
+      "eval_signals": {
+        "position_weights": [1.0, 0.6, 0.3],
+        "citation_bonus": 0.4,
+        "locality_bonus_within_miles": 35,
+        "competitor_penalty_when_absent": 0.0
+      },
+      "output_schema_hint": {
+        "type": "object",
+        "properties": {
+          "crisis_severity": { "type": "string" },
+          "damage_score": { "type": "number" },
+          "negative_mentions": { "type": "array" },
+          "crisis_type": { "type": "string" },
+          "immediate_actions_needed": { "type": "array" }
+        }
+      },
+      "tags": ["crisis", "damage", "reputation"]
+    },
+    {
+      "id": "recovery_roadmap_90d",
+      "title": "90-Day Recovery Roadmap",
+      "category": "crisis",
+      "intent": "meta",
+      "personas": ["recovery_focused", "strategic_planner"],
+      "language": "en",
+      "template": "Create a 90-day reputation recovery plan for {{dealer}}. Based on current negative sentiment and issues found online, what specific actions should they take monthly to rebuild trust? Include review response strategy, content creation, and proactive reputation management.",
+      "variables": [
+        {
+          "name": "dealer",
+          "description": "Target dealership name",
+          "type": "string",
+          "required": true
+        }
+      ],
+      "engine_defaults": {
+        "engines": ["anthropic", "openai"],
+        "temperature": 0.7,
+        "top_p": 0.9,
+        "max_tokens": 2500,
+        "timeout_ms": 50000
+      },
+      "rate_limit": {
+        "min_delay_ms": 4000,
+        "per_run_budget_cents": 600
+      },
+      "eval_signals": {
+        "position_weights": [1.0, 0.6, 0.3],
+        "citation_bonus": 0.1,
+        "locality_bonus_within_miles": 30,
+        "competitor_penalty_when_absent": 0.0
+      },
+      "output_schema_hint": {
+        "type": "object",
+        "properties": {
+          "month_1_actions": { "type": "array" },
+          "month_2_actions": { "type": "array" },
+          "month_3_actions": { "type": "array" },
+          "success_metrics": { "type": "array" },
+          "priority_level": { "type": "string" }
+        }
+      },
+      "tags": ["recovery", "planning", "timeline"]
+    },
+    {
+      "id": "reputation_repair_check",
+      "title": "Reputation Repair Progress Check",
+      "category": "crisis",
+      "intent": "meta",
+      "personas": ["progress_tracker", "recovery_manager"],
+      "language": "en",
+      "template": "Monitor reputation recovery progress for {{dealer}}. Compare current online sentiment to 6 months ago. Are negative results being pushed down? Have new positive reviews and content improved their image? What's working and what needs adjustment?",
+      "variables": [
+        {
+          "name": "dealer",
+          "description": "Target dealership name",
+          "type": "string",
+          "required": true
+        }
+      ],
+      "engine_defaults": {
+        "engines": ["perplexity", "openai"],
+        "temperature": 0.3,
+        "top_p": 0.9,
+        "max_tokens": 1900,
+        "timeout_ms": 35000
+      },
+      "rate_limit": {
+        "min_delay_ms": 2500,
+        "per_run_budget_cents": 380
+      },
+      "eval_signals": {
+        "position_weights": [1.0, 0.6, 0.3],
+        "citation_bonus": 0.3,
+        "locality_bonus_within_miles": 30,
+        "competitor_penalty_when_absent": 0.0
+      },
+      "output_schema_hint": {
+        "type": "object",
+        "properties": {
+          "recovery_progress": { "type": "number" },
+          "improvement_areas": { "type": "array" },
+          "remaining_issues": { "type": "array" },
+          "next_steps": { "type": "array" }
+        }
+      },
+      "tags": ["repair", "progress", "monitoring"]
+    },
+    {
+      "id": "service_top_choices",
+      "title": "Service Department Top Choice Test",
+      "category": "service",
+      "intent": "service",
+      "personas": ["service_customer", "maintenance_focused"],
+      "language": "en",
+      "template": "Search \"best {{brand}} service {{city}}\" and \"{{brand}} service department near me\". Where does {{dealer}} rank for service-related queries? Are they mentioned as a top choice for maintenance, repairs, or warranty work? Compare service reputation to {{competitor_1}}.",
+      "variables": [
+        {
+          "name": "brand",
+          "description": "Car brand/manufacturer",
+          "type": "string",
+          "required": true
+        },
+        {
+          "name": "city",
+          "description": "City location",
+          "type": "string",
+          "required": true
+        },
+        {
+          "name": "dealer",
+          "description": "Target dealership name",
+          "type": "string",
+          "required": true
+        },
+        {
+          "name": "competitor_1",
+          "description": "Primary competitor name",
+          "type": "string",
+          "required": true
+        }
+      ],
+      "engine_defaults": {
+        "engines": ["perplexity", "openai"],
+        "temperature": 0.4,
+        "top_p": 0.9,
+        "max_tokens": 1600,
+        "timeout_ms": 30000
+      },
+      "rate_limit": {
+        "min_delay_ms": 2000,
+        "per_run_budget_cents": 300
+      },
+      "eval_signals": {
+        "position_weights": [1.0, 0.7, 0.4],
+        "citation_bonus": 0.3,
+        "locality_bonus_within_miles": 25,
+        "competitor_penalty_when_absent": -0.15
+      },
+      "output_schema_hint": {
+        "type": "object",
+        "properties": {
+          "service_ranking": { "type": "number" },
+          "service_reputation_score": { "type": "number" },
+          "mentioned_strengths": { "type": "array" },
+          "competitor_comparison": { "type": "string" }
+        }
+      },
+      "tags": ["service", "maintenance", "ranking"]
+    },
+    {
+      "id": "service_same_day",
+      "title": "Same-Day Service Availability Check",
+      "category": "service",
+      "intent": "service",
+      "personas": ["urgent_service", "busy_customer"],
+      "language": "en",
+      "template": "Search for \"same day {{brand}} service {{city}}\" and \"emergency {{brand}} repair {{city}}\". Does {{dealer}} appear for urgent service needs? Do they advertise same-day service, express lanes, or emergency repairs? How do they compare to {{competitor_1}} for urgent service?",
+      "variables": [
+        {
+          "name": "brand",
+          "description": "Car brand/manufacturer",
+          "type": "string",
+          "required": true
+        },
+        {
+          "name": "city",
+          "description": "City location",
+          "type": "string",
+          "required": true
+        },
+        {
+          "name": "dealer",
+          "description": "Target dealership name",
+          "type": "string",
+          "required": true
+        },
+        {
+          "name": "competitor_1",
+          "description": "Primary competitor name",
+          "type": "string",
+          "required": true
+        }
+      ],
+      "engine_defaults": {
+        "engines": ["perplexity", "openai"],
+        "temperature": 0.3,
+        "top_p": 0.9,
+        "max_tokens": 1500,
+        "timeout_ms": 25000
+      },
+      "rate_limit": {
+        "min_delay_ms": 2000,
+        "per_run_budget_cents": 280
+      },
+      "eval_signals": {
+        "position_weights": [1.0, 0.6, 0.3],
+        "citation_bonus": 0.4,
+        "locality_bonus_within_miles": 20,
+        "competitor_penalty_when_absent": -0.1
+      },
+      "output_schema_hint": {
+        "type": "object",
+        "properties": {
+          "same_day_visibility": { "type": "boolean" },
+          "urgent_service_ranking": { "type": "number" },
+          "express_services": { "type": "array" },
+          "competitor_comparison": { "type": "string" }
+        }
+      },
+      "tags": ["same-day", "urgent", "express"]
+    },
+    {
+      "id": "sight_unseen_appraisal_test",
+      "title": "Sight-Unseen Appraisal Visibility",
+      "category": "service",
+      "intent": "sell",
+      "personas": ["seller", "trade_in_focused"],
+      "language": "en",
+      "template": "Search for \"online car appraisal {{city}}\" and \"trade in value {{brand}} {{city}}\". Does {{dealer}} appear for online appraisals or trade-in services? Do they offer sight-unseen evaluations or online trade tools? Compare their trade-in visibility to {{competitor_1}}.",
+      "variables": [
+        {
+          "name": "city",
+          "description": "City location",
+          "type": "string",
+          "required": true
+        },
+        {
+          "name": "brand",
+          "description": "Car brand/manufacturer",
+          "type": "string",
+          "required": true
+        },
+        {
+          "name": "dealer",
+          "description": "Target dealership name",
+          "type": "string",
+          "required": true
+        },
+        {
+          "name": "competitor_1",
+          "description": "Primary competitor name",
+          "type": "string",
+          "required": true
+        }
+      ],
+      "engine_defaults": {
+        "engines": ["perplexity", "openai"],
+        "temperature": 0.2,
+        "top_p": 0.9,
+        "max_tokens": 1400,
+        "timeout_ms": 25000
+      },
+      "rate_limit": {
+        "min_delay_ms": 2000,
+        "per_run_budget_cents": 250
+      },
+      "eval_signals": {
+        "position_weights": [1.0, 0.6, 0.3],
+        "citation_bonus": 0.3,
+        "locality_bonus_within_miles": 30,
+        "competitor_penalty_when_absent": -0.1
+      },
+      "output_schema_hint": {
+        "type": "object",
+        "properties": {
+          "online_appraisal_visibility": { "type": "boolean" },
+          "trade_in_ranking": { "type": "number" },
+          "online_tools_available": { "type": "array" },
+          "competitor_comparison": { "type": "string" }
+        }
+      },
+      "tags": ["appraisal", "trade-in", "online-tools"]
+    },
+    {
+      "id": "trade_in_fairness_check",
+      "title": "Trade-In Fairness Reputation Check",
+      "category": "service",
+      "intent": "sell",
+      "personas": ["trade_seller", "value_conscious"],
+      "language": "en",
+      "template": "Search for \"{{dealer}} trade in values fair\" and \"{{dealer}} lowball trade in\". What do customers say about their trade-in offers? Are they known for fair valuations or lowball offers? How does their trade-in reputation compare to {{competitor_1}}?",
+      "variables": [
+        {
+          "name": "dealer",
+          "description": "Target dealership name",
+          "type": "string",
+          "required": true
+        },
+        {
+          "name": "competitor_1",
+          "description": "Primary competitor name",
+          "type": "string",
+          "required": true
+        }
+      ],
+      "engine_defaults": {
+        "engines": ["perplexity", "anthropic"],
+        "temperature": 0.4,
+        "top_p": 0.9,
+        "max_tokens": 1600,
+        "timeout_ms": 30000
+      },
+      "rate_limit": {
+        "min_delay_ms": 2500,
+        "per_run_budget_cents": 320
+      },
+      "eval_signals": {
+        "position_weights": [1.0, 0.6, 0.3],
+        "citation_bonus": 0.3,
+        "locality_bonus_within_miles": 30,
+        "competitor_penalty_when_absent": 0.0
+      },
+      "output_schema_hint": {
+        "type": "object",
+        "properties": {
+          "fairness_score": { "type": "number" },
+          "customer_feedback": { "type": "array" },
+          "reputation_summary": { "type": "string" },
+          "competitor_comparison": { "type": "string" }
+        }
+      },
+      "tags": ["trade-in", "fairness", "reputation"]
+    },
+    {
+      "id": "finance_transparency_checker",
+      "title": "Finance Transparency Assessment",
+      "category": "service",
+      "intent": "finance",
+      "personas": ["finance_focused", "transparency_seeker"],
+      "language": "en",
+      "template": "Search for \"{{dealer}} financing rates\" and \"{{dealer}} hidden finance fees\". How transparent are they about loan rates, terms, and fees? Do customers complain about surprise charges or high-pressure financing tactics? Compare their finance transparency to {{competitor_1}}.",
+      "variables": [
+        {
+          "name": "dealer",
+          "description": "Target dealership name",
+          "type": "string",
+          "required": true
+        },
+        {
+          "name": "competitor_1",
+          "description": "Primary competitor name",
+          "type": "string",
+          "required": true
+        }
+      ],
+      "engine_defaults": {
+        "engines": ["perplexity", "anthropic"],
+        "temperature": 0.3,
+        "top_p": 0.9,
+        "max_tokens": 1700,
+        "timeout_ms": 35000
+      },
+      "rate_limit": {
+        "min_delay_ms": 2500,
+        "per_run_budget_cents": 350
+      },
+      "eval_signals": {
+        "position_weights": [1.0, 0.6, 0.3],
+        "citation_bonus": 0.3,
+        "locality_bonus_within_miles": 30,
+        "competitor_penalty_when_absent": 0.0
+      },
+      "output_schema_hint": {
+        "type": "object",
+        "properties": {
+          "transparency_score": { "type": "number" },
+          "finance_complaints": { "type": "array" },
+          "rate_transparency": { "type": "boolean" },
+          "competitor_comparison": { "type": "string" }
+        }
+      },
+      "tags": ["finance", "transparency", "fees"]
+    },
+    {
+      "id": "first_time_buyer_programs",
+      "title": "First-Time Buyer Program Visibility",
+      "category": "service",
+      "intent": "finance",
+      "personas": ["first_time_buyer", "young_buyer"],
+      "language": "en",
+      "template": "Search for \"first time car buyer programs {{city}}\" and \"{{brand}} first time buyer {{city}}\". Does {{dealer}} appear for first-time buyer searches? Do they advertise special programs, college grad incentives, or credit-building finance options? Compare to {{competitor_1}}.",
+      "variables": [
+        {
+          "name": "city",
+          "description": "City location",
+          "type": "string",
+          "required": true
+        },
+        {
+          "name": "brand",
+          "description": "Car brand/manufacturer",
+          "type": "string",
+          "required": true
+        },
+        {
+          "name": "dealer",
+          "description": "Target dealership name",
+          "type": "string",
+          "required": true
+        },
+        {
+          "name": "competitor_1",
+          "description": "Primary competitor name",
+          "type": "string",
+          "required": true
+        }
+      ],
+      "engine_defaults": {
+        "engines": ["openai", "perplexity"],
+        "temperature": 0.3,
+        "top_p": 0.9,
+        "max_tokens": 1500,
+        "timeout_ms": 30000
+      },
+      "rate_limit": {
+        "min_delay_ms": 2000,
+        "per_run_budget_cents": 280
+      },
+      "eval_signals": {
+        "position_weights": [1.0, 0.6, 0.3],
+        "citation_bonus": 0.3,
+        "locality_bonus_within_miles": 25,
+        "competitor_penalty_when_absent": -0.1
+      },
+      "output_schema_hint": {
+        "type": "object",
+        "properties": {
+          "first_time_visibility": { "type": "boolean" },
+          "special_programs": { "type": "array" },
+          "program_ranking": { "type": "number" },
+          "competitor_comparison": { "type": "string" }
+        }
+      },
+      "tags": ["first-time", "programs", "incentives"]
+    },
+    {
+      "id": "customer_journey_simulator",
+      "title": "Customer Journey Simulation",
+      "category": "ux",
+      "intent": "buy",
+      "personas": ["journey_mapper", "ux_focused"],
+      "language": "en",
+      "template": "Simulate a customer journey from initial search to purchase for {{dealer}}. Search \"{{brand}} {{model}} {{city}}\" → visit website → check inventory → read reviews → contact dealer. How smooth is the online experience? Where do customers get stuck or frustrated compared to {{competitor_1}}?",
+      "variables": [
+        {
+          "name": "dealer",
+          "description": "Target dealership name",
+          "type": "string",
+          "required": true
+        },
+        {
+          "name": "brand",
+          "description": "Car brand/manufacturer",
+          "type": "string",
+          "required": true
+        },
+        {
+          "name": "model",
+          "description": "Specific car model",
+          "type": "string",
+          "required": true
+        },
+        {
+          "name": "city",
+          "description": "City location",
+          "type": "string",
+          "required": true
+        },
+        {
+          "name": "competitor_1",
+          "description": "Primary competitor name",
+          "type": "string",
+          "required": true
+        }
+      ],
+      "engine_defaults": {
+        "engines": ["anthropic", "openai"],
+        "temperature": 0.5,
+        "top_p": 0.9,
+        "max_tokens": 2200,
+        "timeout_ms": 45000
+      },
+      "rate_limit": {
+        "min_delay_ms": 3500,
+        "per_run_budget_cents": 450
+      },
+      "eval_signals": {
+        "position_weights": [1.0, 0.6, 0.3],
+        "citation_bonus": 0.2,
+        "locality_bonus_within_miles": 30,
+        "competitor_penalty_when_absent": -0.1
+      },
+      "output_schema_hint": {
+        "type": "object",
+        "properties": {
+          "journey_steps": { "type": "array" },
+          "friction_points": { "type": "array" },
+          "smooth_experiences": { "type": "array" },
+          "overall_ux_score": { "type": "number" }
+        }
+      },
+      "tags": ["journey", "ux", "simulation"]
+    },
+    {
+      "id": "voice_query_simulation",
+      "title": "Voice Search Query Test",
+      "category": "ux",
+      "intent": "buy",
+      "personas": ["voice_user", "mobile_user"],
+      "language": "en",
+      "template": "Test voice search queries: \"Hey Google, find {{brand}} dealerships near me\", \"Where can I buy a {{model}} in {{city}}\", \"{{brand}} dealer phone number\". How does {{dealer}} perform in voice search results? Are they optimized for conversational queries vs {{competitor_1}}?",
+      "variables": [
+        {
+          "name": "brand",
+          "description": "Car brand/manufacturer",
+          "type": "string",
+          "required": true
+        },
+        {
+          "name": "model",
+          "description": "Specific car model",
+          "type": "string",
+          "required": true
+        },
+        {
+          "name": "city",
+          "description": "City location",
+          "type": "string",
+          "required": true
+        },
+        {
+          "name": "dealer",
+          "description": "Target dealership name",
+          "type": "string",
+          "required": true
+        },
+        {
+          "name": "competitor_1",
+          "description": "Primary competitor name",
+          "type": "string",
+          "required": true
+        }
+      ],
+      "engine_defaults": {
+        "engines": ["openai", "gemini"],
+        "temperature": 0.3,
+        "top_p": 0.9,
+        "max_tokens": 1600,
+        "timeout_ms": 30000
+      },
+      "rate_limit": {
+        "min_delay_ms": 2000,
+        "per_run_budget_cents": 300
+      },
+      "eval_signals": {
+        "position_weights": [1.0, 0.7, 0.4],
+        "citation_bonus": 0.4,
+        "locality_bonus_within_miles": 20,
+        "competitor_penalty_when_absent": -0.15
+      },
+      "output_schema_hint": {
+        "type": "object",
+        "properties": {
+          "voice_visibility": { "type": "boolean" },
+          "voice_search_ranking": { "type": "number" },
+          "conversational_optimization": { "type": "number" },
+          "competitor_comparison": { "type": "string" }
+        }
+      },
+      "tags": ["voice-search", "conversational", "mobile"]
+    },
+    {
+      "id": "ev_readiness_audit",
+      "title": "Electric Vehicle Readiness Check",
+      "category": "operations",
+      "intent": "buy",
+      "personas": ["ev_buyer", "environmentally_conscious"],
+      "language": "en",
+      "template": "Search for \"{{brand}} electric vehicles {{city}}\" and \"EV charging {{dealer}}\". How prepared is {{dealer}} for electric vehicle sales and service? Do they mention EV expertise, charging stations, or hybrid services? Compare EV readiness to {{competitor_1}}.",
+      "variables": [
+        {
+          "name": "brand",
+          "description": "Car brand/manufacturer",
+          "type": "string",
+          "required": true
+        },
+        {
+          "name": "city",
+          "description": "City location",
+          "type": "string",
+          "required": true
+        },
+        {
+          "name": "dealer",
+          "description": "Target dealership name",
+          "type": "string",
+          "required": true
+        },
+        {
+          "name": "competitor_1",
+          "description": "Primary competitor name",
+          "type": "string",
+          "required": true
+        }
+      ],
+      "engine_defaults": {
+        "engines": ["perplexity", "openai"],
+        "temperature": 0.4,
+        "top_p": 0.9,
+        "max_tokens": 1600,
+        "timeout_ms": 30000
+      },
+      "rate_limit": {
+        "min_delay_ms": 2000,
+        "per_run_budget_cents": 300
+      },
+      "eval_signals": {
+        "position_weights": [1.0, 0.6, 0.3],
+        "citation_bonus": 0.3,
+        "locality_bonus_within_miles": 30,
+        "competitor_penalty_when_absent": -0.1
+      },
+      "output_schema_hint": {
+        "type": "object",
+        "properties": {
+          "ev_readiness_score": { "type": "number" },
+          "ev_inventory_visibility": { "type": "boolean" },
+          "charging_infrastructure": { "type": "boolean" },
+          "competitor_comparison": { "type": "string" }
+        }
+      },
+      "tags": ["ev", "electric", "charging"]
+    },
+    {
+      "id": "commercial_fleet_friendly",
+      "title": "Commercial Fleet Friendliness",
+      "category": "operations",
+      "intent": "buy",
+      "personas": ["fleet_manager", "business_buyer"],
+      "language": "en",
+      "template": "Search for \"{{brand}} commercial fleet {{city}}\" and \"business vehicle sales {{dealer}}\". Does {{dealer}} appear for commercial and fleet sales? Do they advertise fleet discounts, business services, or commercial vehicle expertise? Compare fleet visibility to {{competitor_1}}.",
+      "variables": [
+        {
+          "name": "brand",
+          "description": "Car brand/manufacturer",
+          "type": "string",
+          "required": true
+        },
+        {
+          "name": "city",
+          "description": "City location",
+          "type": "string",
+          "required": true
+        },
+        {
+          "name": "dealer",
+          "description": "Target dealership name",
+          "type": "string",
+          "required": true
+        },
+        {
+          "name": "competitor_1",
+          "description": "Primary competitor name",
+          "type": "string",
+          "required": true
+        }
+      ],
+      "engine_defaults": {
+        "engines": ["perplexity", "openai"],
+        "temperature": 0.3,
+        "top_p": 0.9,
+        "max_tokens": 1500,
+        "timeout_ms": 25000
+      },
+      "rate_limit": {
+        "min_delay_ms": 2000,
+        "per_run_budget_cents": 280
+      },
+      "eval_signals": {
+        "position_weights": [1.0, 0.6, 0.3],
+        "citation_bonus": 0.3,
+        "locality_bonus_within_miles": 35,
+        "competitor_penalty_when_absent": -0.1
+      },
+      "output_schema_hint": {
+        "type": "object",
+        "properties": {
+          "fleet_visibility": { "type": "boolean" },
+          "commercial_services": { "type": "array" },
+          "fleet_ranking": { "type": "number" },
+          "competitor_comparison": { "type": "string" }
+        }
+      },
+      "tags": ["fleet", "commercial", "business"]
+    },
+    {
+      "id": "vdps_data_completeness",
+      "title": "Vehicle Detail Page Completeness",
+      "category": "operations",
+      "intent": "buy",
+      "personas": ["detail_oriented", "online_researcher"],
+      "language": "en",
+      "template": "Evaluate {{dealer}}'s vehicle detail pages (VDPs) for {{model}} listings. Are photos complete, specifications detailed, and pricing transparent? How do their VDPs compare to {{competitor_1}} in terms of information quality and user experience?",
+      "variables": [
+        {
+          "name": "dealer",
+          "description": "Target dealership name",
+          "type": "string",
+          "required": true
+        },
+        {
+          "name": "model",
+          "description": "Specific car model",
+          "type": "string",
+          "required": true
+        },
+        {
+          "name": "competitor_1",
+          "description": "Primary competitor name",
+          "type": "string",
+          "required": true
+        }
+      ],
+      "engine_defaults": {
+        "engines": ["openai", "anthropic"],
+        "temperature": 0.3,
+        "top_p": 0.9,
+        "max_tokens": 1700,
+        "timeout_ms": 35000
+      },
+      "rate_limit": {
+        "min_delay_ms": 2500,
+        "per_run_budget_cents": 330
+      },
+      "eval_signals": {
+        "position_weights": [1.0, 0.6, 0.3],
+        "citation_bonus": 0.2,
+        "locality_bonus_within_miles": 30,
+        "competitor_penalty_when_absent": -0.1
+      },
+      "output_schema_hint": {
+        "type": "object",
+        "properties": {
+          "vdp_completeness_score": { "type": "number" },
+          "photo_quality": { "type": "number" },
+          "information_depth": { "type": "number" },
+          "competitor_comparison": { "type": "string" }
+        }
+      },
+      "tags": ["vdp", "listings", "completeness"]
+    },
+    {
+      "id": "inventory_freshness_signal",
+      "title": "Inventory Freshness Signal Check",
+      "category": "operations",
+      "intent": "buy",
+      "personas": ["availability_focused", "urgent_buyer"],
+      "language": "en",
+      "template": "Check {{dealer}}'s inventory freshness signals. Are their {{model}} listings current and accurate? Do they show real-time availability, recent arrivals, or sold indicators? How does their inventory management compare to {{competitor_1}} for accuracy and timeliness?",
+      "variables": [
+        {
+          "name": "dealer",
+          "description": "Target dealership name",
+          "type": "string",
+          "required": true
+        },
+        {
+          "name": "model",
+          "description": "Specific car model",
+          "type": "string",
+          "required": true
+        },
+        {
+          "name": "competitor_1",
+          "description": "Primary competitor name",
+          "type": "string",
+          "required": true
+        }
+      ],
+      "engine_defaults": {
+        "engines": ["openai", "perplexity"],
+        "temperature": 0.2,
+        "top_p": 0.9,
+        "max_tokens": 1500,
+        "timeout_ms": 25000
+      },
+      "rate_limit": {
+        "min_delay_ms": 2000,
+        "per_run_budget_cents": 280
+      },
+      "eval_signals": {
+        "position_weights": [1.0, 0.6, 0.3],
+        "citation_bonus": 0.2,
+        "locality_bonus_within_miles": 30,
+        "competitor_penalty_when_absent": -0.1
+      },
+      "output_schema_hint": {
+        "type": "object",
+        "properties": {
+          "freshness_score": { "type": "number" },
+          "real_time_updates": { "type": "boolean" },
+          "inventory_accuracy": { "type": "number" },
+          "competitor_comparison": { "type": "string" }
+        }
+      },
+      "tags": ["inventory", "freshness", "accuracy"]
+    },
+    {
+      "id": "policy_clarity_check",
+      "title": "Policy Clarity Assessment",
+      "category": "operations",
+      "intent": "buy",
+      "personas": ["policy_aware", "cautious_buyer"],
+      "language": "en",
+      "template": "Review {{dealer}}'s policy transparency: return policy, warranty terms, service guarantees, and cancellation policies. Are these clearly stated on their website? How does policy transparency compare to {{competitor_1}}? Are there any hidden terms or unclear conditions?",
+      "variables": [
+        {
+          "name": "dealer",
+          "description": "Target dealership name",
+          "type": "string",
+          "required": true
+        },
+        {
+          "name": "competitor_1",
+          "description": "Primary competitor name",
+          "type": "string",
+          "required": true
+        }
+      ],
+      "engine_defaults": {
+        "engines": ["anthropic", "openai"],
+        "temperature": 0.3,
+        "top_p": 0.9,
+        "max_tokens": 1800,
+        "timeout_ms": 35000
+      },
+      "rate_limit": {
+        "min_delay_ms": 2500,
+        "per_run_budget_cents": 350
+      },
+      "eval_signals": {
+        "position_weights": [1.0, 0.6, 0.3],
+        "citation_bonus": 0.2,
+        "locality_bonus_within_miles": 30,
+        "competitor_penalty_when_absent": 0.0
+      },
+      "output_schema_hint": {
+        "type": "object",
+        "properties": {
+          "policy_transparency_score": { "type": "number" },
+          "clear_policies": { "type": "array" },
+          "unclear_policies": { "type": "array" },
+          "competitor_comparison": { "type": "string" }
+        }
+      },
+      "tags": ["policy", "transparency", "terms"]
+    },
+    {
+      "id": "response_time_truth_test",
+      "title": "Response Time Truth Test",
+      "category": "operations",
+      "intent": "meta",
+      "personas": ["responsive_focused", "impatient_customer"],
+      "language": "en",
+      "template": "Search for customer feedback about {{dealer}}'s response times: phone calls, emails, web inquiries, and chat support. How quickly do they respond to customer inquiries? Are there complaints about slow responses? Compare responsiveness reputation to {{competitor_1}}.",
+      "variables": [
+        {
+          "name": "dealer",
+          "description": "Target dealership name",
+          "type": "string",
+          "required": true
+        },
+        {
+          "name": "competitor_1",
+          "description": "Primary competitor name",
+          "type": "string",
+          "required": true
+        }
+      ],
+      "engine_defaults": {
+        "engines": ["perplexity", "anthropic"],
+        "temperature": 0.4,
+        "top_p": 0.9,
+        "max_tokens": 1600,
+        "timeout_ms": 30000
+      },
+      "rate_limit": {
+        "min_delay_ms": 2500,
+        "per_run_budget_cents": 320
+      },
+      "eval_signals": {
+        "position_weights": [1.0, 0.6, 0.3],
+        "citation_bonus": 0.3,
+        "locality_bonus_within_miles": 30,
+        "competitor_penalty_when_absent": 0.0
+      },
+      "output_schema_hint": {
+        "type": "object",
+        "properties": {
+          "response_time_score": { "type": "number" },
+          "response_complaints": { "type": "array" },
+          "positive_feedback": { "type": "array" },
+          "competitor_comparison": { "type": "string" }
+        }
+      },
+      "tags": ["response-time", "customer-service", "communication"]
+    }
+  ]
+}

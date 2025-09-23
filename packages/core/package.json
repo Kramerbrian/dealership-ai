@@ -1,0 +1,14 @@
+{
+  "name": "@dealershipai/core",
+  "private": true,
+  "version": "0.0.1",
+  "type": "module",
+  "exports": { ".": "./src/index.ts" },
+  "scripts": {
+    "lint": "echo 'add lint'",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "typescript": "^5.3.3"
+  }
+}

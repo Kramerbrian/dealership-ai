@@ -1,0 +1,28 @@
+{
+  "@context": "https://schema.org",
+  "@type": "AutoDealer",
+  "name": "Premier Auto Group",
+  "url": "https://your-dealership.com",
+  "telephone": "+1-555-123-4567",
+  "address": {
+    "@type": "PostalAddress",
+    "streetAddress": "123 Main Street",
+    "addressLocality": "Your City",
+    "addressRegion": "Your State",
+    "postalCode": "12345",
+    "addressCountry": "US"
+  },
+  "foundingDate": "1995-01-01",
+  "hasCredential": [
+    {
+      "@type": "EducationalOccupationalCredential",
+      "credentialCategory": "Better Business Bureau A+ Rating"
+    }
+  ],
+  "award": [
+    {
+      "@type": "Award",
+      "name": "Dealer of the Year 2024"
+    }
+  ]
+}
