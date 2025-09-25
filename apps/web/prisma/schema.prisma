@@ -5,15 +5,9 @@ generator client {
 }
 
 datasource db {
-  provider = "sqlite"
-  url      = "file:./dev.db"
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
 }
-
-// Alternative PostgreSQL config (uncomment for production):
-// datasource db {
-//   provider = "postgresql"
-//   url      = env("DATABASE_URL")
-// }
 
 model Dealer {
   id          String   @id // Use our custom IDs like 'toyota-naples'

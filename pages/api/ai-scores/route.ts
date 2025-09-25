@@ -144,8 +144,8 @@ export async function GET(request: NextRequest) {
   try {
     // Rate limiting
     const ip = request.ip ?? '127.0.0.1';
-    const result = await limiter.check(10, ip);
-    const success = 'success' in result ? result.success : result;
+    const rateLimitResult = await limiter.check(10, ip);
+    const success = 'success' in rateLimitResult ? rateLimitResult.success : rateLimitResult;
 
     if (!success) {
       return NextResponse.json(

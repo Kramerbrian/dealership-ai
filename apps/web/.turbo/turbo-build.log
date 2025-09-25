@@ -1,221 +1,34 @@
 
-> @dealershipai/web@ build /Users/briankramer/Documents/GitHub/dealership-ai/apps/web
+> @dealershipai/web@ build /Users/briankramer/dealership-ai/apps/web
 > next build
 
  ⚠ Invalid next.config.mjs options detected: 
- ⚠     Unrecognized key(s) in object: 'sentry'
+ ⚠     Unrecognized key(s) in object: 'swcMinify', 'sentry'
  ⚠ See more info here: https://nextjs.org/docs/messages/invalid-next-config
-   ▲ Next.js 14.0.4
+ ⚠ `experimental.typedRoutes` has been moved to `typedRoutes`. Please update your next.config.mjs file accordingly.
+ ⚠ Warning: Next.js inferred your workspace root, but it may not be correct.
+ We detected multiple lockfiles and selected the directory of /Users/briankramer/package-lock.json as the root directory.
+ To silence this warning, set `outputFileTracingRoot` in your Next.js config, or consider removing one of the lockfiles if it's not needed.
+   See https://nextjs.org/docs/app/api-reference/config/next-config-js/output#caveats for more information.
+ Detected additional lockfiles: 
+   * /Users/briankramer/dealership-ai/pnpm-lock.yaml
+
+   ▲ Next.js 15.5.3
    - Environments: .env.local, .env.production
-   - Experiments (use at your own risk):
-     · typedRoutes
+   - Experiments (use with caution):
+     ✓ typedRoutes
 
    Creating an optimized production build ...
- ⚠ Compiled with warnings
+Failed to compile.
 
-./app/api/ai/chat/route.ts
-Attempted import error: 'logCostEntry' is not exported from '@/lib/db' (imported as 'logCostEntry').
+./lib/auth.ts
+Module not found: Can't resolve '@auth/prisma-adapter'
 
-Import trace for requested module:
-./app/api/ai/chat/route.ts
-
-./app/api/dashboard/route.ts
-Attempted import error: 'IntelligenceEngine' is not exported from '@dealershipai/core' (imported as 'IntelligenceEngine').
+https://nextjs.org/docs/messages/module-not-found
 
 Import trace for requested module:
-./app/api/dashboard/route.ts
-
-./app/api/dashboard/route.ts
-Attempted import error: 'estimateRevenueAtRisk' is not exported from '@dealershipai/core' (imported as 'estimateRevenueAtRisk').
-
-Import trace for requested module:
-./app/api/dashboard/route.ts
-
-   Skipping validation of types
-   Skipping linting
-   Collecting page data ...
-{"level":"error","message":"Redis error","timestamp":"2025-09-23T03:44:06.192Z","error":{"name":"Error","message":"connect ECONNREFUSED 127.0.0.1:6379","stack":"Error: connect ECONNREFUSED 127.0.0.1:6379\n    at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1637:16)"}}
-{"level":"error","message":"Redis error","timestamp":"2025-09-23T03:44:06.250Z","error":{"name":"Error","message":"connect ECONNREFUSED 127.0.0.1:6379","stack":"Error: connect ECONNREFUSED 127.0.0.1:6379\n    at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1637:16)"}}
-{"level":"info","message":"Queue processing started","timestamp":"2025-09-23T03:44:06.254Z","context":{"concurrency":3}}
-{"level":"info","message":"Queue processing started","timestamp":"2025-09-23T03:44:06.258Z","context":{"concurrency":3}}
-{"level":"info","message":"Queue processing started","timestamp":"2025-09-23T03:44:06.264Z","context":{"concurrency":3}}
-{"level":"info","message":"Queue processing started","timestamp":"2025-09-23T03:44:06.266Z","context":{"concurrency":3}}
-{"level":"info","message":"Queue processing started","timestamp":"2025-09-23T03:44:06.276Z","context":{"concurrency":3}}
-{"level":"info","message":"Job processor registered","timestamp":"2025-09-23T03:44:06.278Z","context":{"jobType":"batch-test"}}
-{"level":"error","message":"Redis error","timestamp":"2025-09-23T03:44:06.328Z","error":{"name":"Error","message":"connect ECONNREFUSED 127.0.0.1:6379","stack":"Error: connect ECONNREFUSED 127.0.0.1:6379\n    at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1637:16)"}}
-{"level":"error","message":"Redis error","timestamp":"2025-09-23T03:44:06.334Z","error":{"name":"Error","message":"connect ECONNREFUSED 127.0.0.1:6379","stack":"Error: connect ECONNREFUSED 127.0.0.1:6379\n    at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1637:16)\n    at TCPConnectWrap.callbackTrampoline (node:internal/async_hooks:130:17)"}}
-{"level":"error","message":"Redis error","timestamp":"2025-09-23T03:44:06.336Z","error":{"name":"Error","message":"connect ECONNREFUSED 127.0.0.1:6379","stack":"Error: connect ECONNREFUSED 127.0.0.1:6379\n    at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1637:16)"}}
-{"level":"error","message":"Redis error","timestamp":"2025-09-23T03:44:06.348Z","error":{"name":"Error","message":"connect ECONNREFUSED 127.0.0.1:6379","stack":"Error: connect ECONNREFUSED 127.0.0.1:6379\n    at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1637:16)"}}
-{"level":"error","message":"Redis error","timestamp":"2025-09-23T03:44:06.358Z","error":{"name":"Error","message":"connect ECONNREFUSED 127.0.0.1:6379","stack":"Error: connect ECONNREFUSED 127.0.0.1:6379\n    at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1637:16)"}}
-{"level":"error","message":"Redis error","timestamp":"2025-09-23T03:44:06.360Z","error":{"name":"Error","message":"connect ECONNREFUSED 127.0.0.1:6379","stack":"Error: connect ECONNREFUSED 127.0.0.1:6379\n    at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1637:16)"}}
-{"level":"error","message":"Redis error","timestamp":"2025-09-23T03:44:06.384Z","error":{"name":"Error","message":"connect ECONNREFUSED 127.0.0.1:6379","stack":"Error: connect ECONNREFUSED 127.0.0.1:6379\n    at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1637:16)"}}
-{"level":"error","message":"Redis error","timestamp":"2025-09-23T03:44:06.385Z","error":{"name":"Error","message":"connect ECONNREFUSED 127.0.0.1:6379","stack":"Error: connect ECONNREFUSED 127.0.0.1:6379\n    at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1637:16)\n    at TCPConnectWrap.callbackTrampoline (node:internal/async_hooks:130:17)"}}
-{"level":"error","message":"Redis error","timestamp":"2025-09-23T03:44:06.389Z","error":{"name":"Error","message":"connect ECONNREFUSED 127.0.0.1:6379","stack":"Error: connect ECONNREFUSED 127.0.0.1:6379\n    at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1637:16)"}}
-{"level":"error","message":"Redis error","timestamp":"2025-09-23T03:44:06.402Z","error":{"name":"Error","message":"connect ECONNREFUSED 127.0.0.1:6379","stack":"Error: connect ECONNREFUSED 127.0.0.1:6379\n    at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1637:16)"}}
-{"level":"error","message":"Redis error","timestamp":"2025-09-23T03:44:06.413Z","error":{"name":"Error","message":"connect ECONNREFUSED 127.0.0.1:6379","stack":"Error: connect ECONNREFUSED 127.0.0.1:6379\n    at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1637:16)"}}
-{"level":"error","message":"Redis error","timestamp":"2025-09-23T03:44:06.487Z","error":{"name":"Error","message":"connect ECONNREFUSED 127.0.0.1:6379","stack":"Error: connect ECONNREFUSED 127.0.0.1:6379\n    at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1637:16)\n    at TCPConnectWrap.callbackTrampoline (node:internal/async_hooks:130:17)"}}
-{"level":"error","message":"Redis error","timestamp":"2025-09-23T03:44:06.487Z","error":{"name":"Error","message":"connect ECONNREFUSED 127.0.0.1:6379","stack":"Error: connect ECONNREFUSED 127.0.0.1:6379\n    at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1637:16)"}}
-{"level":"error","message":"Redis error","timestamp":"2025-09-23T03:44:06.491Z","error":{"name":"Error","message":"connect ECONNREFUSED 127.0.0.1:6379","stack":"Error: connect ECONNREFUSED 127.0.0.1:6379\n    at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1637:16)"}}
-{"level":"error","message":"Redis error","timestamp":"2025-09-23T03:44:06.504Z","error":{"name":"Error","message":"connect ECONNREFUSED 127.0.0.1:6379","stack":"Error: connect ECONNREFUSED 127.0.0.1:6379\n    at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1637:16)"}}
-{"level":"error","message":"Redis error","timestamp":"2025-09-23T03:44:06.510Z","error":{"name":"Error","message":"connect ECONNREFUSED 127.0.0.1:6379","stack":"Error: connect ECONNREFUSED 127.0.0.1:6379\n    at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1637:16)"}}
-{"level":"error","message":"Redis error","timestamp":"2025-09-23T03:44:06.514Z","error":{"name":"Error","message":"connect ECONNREFUSED 127.0.0.1:6379","stack":"Error: connect ECONNREFUSED 127.0.0.1:6379\n    at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1637:16)"}}
-{"level":"error","message":"Redis error","timestamp":"2025-09-23T03:44:06.639Z","error":{"name":"Error","message":"connect ECONNREFUSED 127.0.0.1:6379","stack":"Error: connect ECONNREFUSED 127.0.0.1:6379\n    at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1637:16)"}}
-{"level":"error","message":"Redis error","timestamp":"2025-09-23T03:44:06.639Z","error":{"name":"Error","message":"connect ECONNREFUSED 127.0.0.1:6379","stack":"Error: connect ECONNREFUSED 127.0.0.1:6379\n    at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1637:16)\n    at TCPConnectWrap.callbackTrampoline (node:internal/async_hooks:130:17)"}}
-{"level":"error","message":"Redis error","timestamp":"2025-09-23T03:44:06.644Z","error":{"name":"Error","message":"connect ECONNREFUSED 127.0.0.1:6379","stack":"Error: connect ECONNREFUSED 127.0.0.1:6379\n    at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1637:16)"}}
-{"level":"error","message":"Redis error","timestamp":"2025-09-23T03:44:06.656Z","error":{"name":"Error","message":"connect ECONNREFUSED 127.0.0.1:6379","stack":"Error: connect ECONNREFUSED 127.0.0.1:6379\n    at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1637:16)"}}
-{"level":"error","message":"Redis error","timestamp":"2025-09-23T03:44:06.665Z","error":{"name":"Error","message":"connect ECONNREFUSED 127.0.0.1:6379","stack":"Error: connect ECONNREFUSED 127.0.0.1:6379\n    at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1637:16)"}}
-{"level":"error","message":"Redis error","timestamp":"2025-09-23T03:44:06.712Z","error":{"name":"Error","message":"connect ECONNREFUSED 127.0.0.1:6379","stack":"Error: connect ECONNREFUSED 127.0.0.1:6379\n    at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1637:16)"}}
-{"level":"error","message":"Redis error","timestamp":"2025-09-23T03:44:06.841Z","error":{"name":"Error","message":"connect ECONNREFUSED 127.0.0.1:6379","stack":"Error: connect ECONNREFUSED 127.0.0.1:6379\n    at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1637:16)\n    at TCPConnectWrap.callbackTrampoline (node:internal/async_hooks:130:17)"}}
-{"level":"error","message":"Redis error","timestamp":"2025-09-23T03:44:06.842Z","error":{"name":"Error","message":"connect ECONNREFUSED 127.0.0.1:6379","stack":"Error: connect ECONNREFUSED 127.0.0.1:6379\n    at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1637:16)"}}
-{"level":"error","message":"Redis error","timestamp":"2025-09-23T03:44:06.848Z","error":{"name":"Error","message":"connect ECONNREFUSED 127.0.0.1:6379","stack":"Error: connect ECONNREFUSED 127.0.0.1:6379\n    at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1637:16)"}}
-{"level":"error","message":"Redis error","timestamp":"2025-09-23T03:44:06.858Z","error":{"name":"Error","message":"connect ECONNREFUSED 127.0.0.1:6379","stack":"Error: connect ECONNREFUSED 127.0.0.1:6379\n    at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1637:16)"}}
-{"level":"error","message":"Redis error","timestamp":"2025-09-23T03:44:06.868Z","error":{"name":"Error","message":"connect ECONNREFUSED 127.0.0.1:6379","stack":"Error: connect ECONNREFUSED 127.0.0.1:6379\n    at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1637:16)"}}
-   Generating static pages (0/49) ...
-Auth middleware error: ew [Error]: Dynamic server usage: Page couldn't be rendered statically because it used `request.cookies`. See more info here: https://nextjs.org/docs/messages/dynamic-server-error
-    at Object.eP [as staticGenerationBailout] (/Users/briankramer/Documents/GitHub/dealership-ai/node_modules/.pnpm/next@14.0.4_@babel+core@7.28.4_@opentelemetry+api@1.9.0_react-dom@18.2.0_react@18.2.0__react@18.2.0/node_modules/next/dist/compiled/next-server/app-route.runtime.prod.js:6:29225)
-    at i (/Users/briankramer/Documents/GitHub/dealership-ai/node_modules/.pnpm/next@14.0.4_@babel+core@7.28.4_@opentelemetry+api@1.9.0_react-dom@18.2.0_react@18.2.0__react@18.2.0/node_modules/next/dist/compiled/next-server/app-route.runtime.prod.js:6:34633)
-    at Object.get (/Users/briankramer/Documents/GitHub/dealership-ai/node_modules/.pnpm/next@14.0.4_@babel+core@7.28.4_@opentelemetry+api@1.9.0_react-dom@18.2.0_react@18.2.0__react@18.2.0/node_modules/next/dist/compiled/next-server/app-route.runtime.prod.js:6:34729)
-    at f (/Users/briankramer/Documents/GitHub/dealership-ai/apps/web/.next/server/chunks/4955.js:1:97266)
-    at /Users/briankramer/Documents/GitHub/dealership-ai/apps/web/.next/server/app/api/advanced-kpis/route.js:1:3638
-    at /Users/briankramer/Documents/GitHub/dealership-ai/node_modules/.pnpm/next@14.0.4_@babel+core@7.28.4_@opentelemetry+api@1.9.0_react-dom@18.2.0_react@18.2.0__react@18.2.0/node_modules/next/dist/compiled/next-server/app-route.runtime.prod.js:6:41966
-    at /Users/briankramer/Documents/GitHub/dealership-ai/node_modules/.pnpm/next@14.0.4_@babel+core@7.28.4_@opentelemetry+api@1.9.0_react-dom@18.2.0_react@18.2.0__react@18.2.0/node_modules/next/dist/server/lib/trace/tracer.js:133:36
-    at NoopContextManager.with (/Users/briankramer/Documents/GitHub/dealership-ai/node_modules/.pnpm/@opentelemetry+api@1.9.0/node_modules/@opentelemetry/api/build/src/context/NoopContextManager.js:25:19)
-    at ContextAPI.with (/Users/briankramer/Documents/GitHub/dealership-ai/node_modules/.pnpm/@opentelemetry+api@1.9.0/node_modules/@opentelemetry/api/build/src/api/context.js:60:46)
-    at NoopTracer.startActiveSpan (/Users/briankramer/Documents/GitHub/dealership-ai/node_modules/.pnpm/@opentelemetry+api@1.9.0/node_modules/@opentelemetry/api/build/src/trace/NoopTracer.js:65:31) {
-  digest: 'DYNAMIC_SERVER_USAGE'
-}
-{"level":"error","message":"Redis error","timestamp":"2025-09-23T03:44:06.964Z","error":{"name":"Error","message":"connect ECONNREFUSED 127.0.0.1:6379","stack":"Error: connect ECONNREFUSED 127.0.0.1:6379\n    at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1637:16)\n    at TCPConnectWrap.callbackTrampoline (node:internal/async_hooks:130:17)"}}
-{"level":"error","message":"Redis error","timestamp":"2025-09-23T03:44:07.093Z","error":{"name":"Error","message":"connect ECONNREFUSED 127.0.0.1:6379","stack":"Error: connect ECONNREFUSED 127.0.0.1:6379\n    at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1637:16)\n    at TCPConnectWrap.callbackTrampoline (node:internal/async_hooks:130:17)"}}
-{"level":"error","message":"Redis error","timestamp":"2025-09-23T03:44:07.395Z","error":{"name":"Error","message":"connect ECONNREFUSED 127.0.0.1:6379","stack":"Error: connect ECONNREFUSED 127.0.0.1:6379\n    at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1637:16)\n    at TCPConnectWrap.callbackTrampoline (node:internal/async_hooks:130:17)"}}
-{"level":"error","message":"Redis error","timestamp":"2025-09-23T03:44:07.096Z","error":{"name":"Error","message":"connect ECONNREFUSED 127.0.0.1:6379","stack":"Error: connect ECONNREFUSED 127.0.0.1:6379\n    at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1637:16)\n    at TCPConnectWrap.callbackTrampoline (node:internal/async_hooks:130:17)"}}
-{"level":"error","message":"Redis error","timestamp":"2025-09-23T03:44:07.398Z","error":{"name":"Error","message":"connect ECONNREFUSED 127.0.0.1:6379","stack":"Error: connect ECONNREFUSED 127.0.0.1:6379\n    at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1637:16)\n    at TCPConnectWrap.callbackTrampoline (node:internal/async_hooks:130:17)"}}
-{"level":"error","message":"Redis error","timestamp":"2025-09-23T03:44:07.104Z","error":{"name":"Error","message":"connect ECONNREFUSED 127.0.0.1:6379","stack":"Error: connect ECONNREFUSED 127.0.0.1:6379\n    at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1637:16)\n    at TCPConnectWrap.callbackTrampoline (node:internal/async_hooks:130:17)"}}
-{"level":"error","message":"Redis error","timestamp":"2025-09-23T03:44:07.408Z","error":{"name":"Error","message":"connect ECONNREFUSED 127.0.0.1:6379","stack":"Error: connect ECONNREFUSED 127.0.0.1:6379\n    at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1637:16)\n    at TCPConnectWrap.callbackTrampoline (node:internal/async_hooks:130:17)"}}
-{"level":"error","message":"Redis error","timestamp":"2025-09-23T03:44:07.110Z","error":{"name":"Error","message":"connect ECONNREFUSED 127.0.0.1:6379","stack":"Error: connect ECONNREFUSED 127.0.0.1:6379\n    at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1637:16)\n    at TCPConnectWrap.callbackTrampoline (node:internal/async_hooks:130:17)"}}
-{"level":"error","message":"Redis error","timestamp":"2025-09-23T03:44:07.412Z","error":{"name":"Error","message":"connect ECONNREFUSED 127.0.0.1:6379","stack":"Error: connect ECONNREFUSED 127.0.0.1:6379\n    at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1637:16)\n    at TCPConnectWrap.callbackTrampoline (node:internal/async_hooks:130:17)"}}
-{"level":"error","message":"Redis error","timestamp":"2025-09-23T03:44:07.121Z","error":{"name":"Error","message":"connect ECONNREFUSED 127.0.0.1:6379","stack":"Error: connect ECONNREFUSED 127.0.0.1:6379\n    at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1637:16)\n    at TCPConnectWrap.callbackTrampoline (node:internal/async_hooks:130:17)"}}
-{"level":"error","message":"Redis error","timestamp":"2025-09-23T03:44:07.424Z","error":{"name":"Error","message":"connect ECONNREFUSED 127.0.0.1:6379","stack":"Error: connect ECONNREFUSED 127.0.0.1:6379\n    at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1637:16)\n    at TCPConnectWrap.callbackTrampoline (node:internal/async_hooks:130:17)"}}
-   Generating static pages (12/49) 
-{"level":"error","message":"Redis error","timestamp":"2025-09-23T03:44:07.285Z","error":{"name":"Error","message":"connect ECONNREFUSED 127.0.0.1:6379","stack":"Error: connect ECONNREFUSED 127.0.0.1:6379\n    at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1637:16)\n    at TCPConnectWrap.callbackTrampoline (node:internal/async_hooks:130:17)"}}
-{"level":"error","message":"Redis error","timestamp":"2025-09-23T03:44:07.636Z","error":{"name":"Error","message":"connect ECONNREFUSED 127.0.0.1:6379","stack":"Error: connect ECONNREFUSED 127.0.0.1:6379\n    at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1637:16)\n    at TCPConnectWrap.callbackTrampoline (node:internal/async_hooks:130:17)"}}
-{"level":"error","message":"Redis error","timestamp":"2025-09-23T03:44:07.663Z","error":{"name":"Error","message":"connect ECONNREFUSED 127.0.0.1:6379","stack":"Error: connect ECONNREFUSED 127.0.0.1:6379\n    at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1637:16)\n    at TCPConnectWrap.callbackTrampoline (node:internal/async_hooks:130:17)"}}
-Auth middleware error: ew [Error]: Dynamic server usage: Page couldn't be rendered statically because it used `request.cookies`. See more info here: https://nextjs.org/docs/messages/dynamic-server-error
-    at Object.eP [as staticGenerationBailout] (/Users/briankramer/Documents/GitHub/dealership-ai/node_modules/.pnpm/next@14.0.4_@babel+core@7.28.4_@opentelemetry+api@1.9.0_react-dom@18.2.0_react@18.2.0__react@18.2.0/node_modules/next/dist/compiled/next-server/app-route.runtime.prod.js:6:29225)
-    at i (/Users/briankramer/Documents/GitHub/dealership-ai/node_modules/.pnpm/next@14.0.4_@babel+core@7.28.4_@opentelemetry+api@1.9.0_react-dom@18.2.0_react@18.2.0__react@18.2.0/node_modules/next/dist/compiled/next-server/app-route.runtime.prod.js:6:34633)
-    at Object.get (/Users/briankramer/Documents/GitHub/dealership-ai/node_modules/.pnpm/next@14.0.4_@babel+core@7.28.4_@opentelemetry+api@1.9.0_react-dom@18.2.0_react@18.2.0__react@18.2.0/node_modules/next/dist/compiled/next-server/app-route.runtime.prod.js:6:34729)
-    at f (/Users/briankramer/Documents/GitHub/dealership-ai/apps/web/.next/server/chunks/4955.js:1:97266)
-    at /Users/briankramer/Documents/GitHub/dealership-ai/apps/web/.next/server/app/api/advanced-kpis/route.js:1:3638
-    at /Users/briankramer/Documents/GitHub/dealership-ai/node_modules/.pnpm/next@14.0.4_@babel+core@7.28.4_@opentelemetry+api@1.9.0_react-dom@18.2.0_react@18.2.0__react@18.2.0/node_modules/next/dist/compiled/next-server/app-route.runtime.prod.js:6:41966
-    at /Users/briankramer/Documents/GitHub/dealership-ai/node_modules/.pnpm/next@14.0.4_@babel+core@7.28.4_@opentelemetry+api@1.9.0_react-dom@18.2.0_react@18.2.0__react@18.2.0/node_modules/next/dist/server/lib/trace/tracer.js:133:36
-    at NoopContextManager.with (/Users/briankramer/Documents/GitHub/dealership-ai/node_modules/.pnpm/@opentelemetry+api@1.9.0/node_modules/@opentelemetry/api/build/src/context/NoopContextManager.js:25:19)
-    at ContextAPI.with (/Users/briankramer/Documents/GitHub/dealership-ai/node_modules/.pnpm/@opentelemetry+api@1.9.0/node_modules/@opentelemetry/api/build/src/api/context.js:60:46)
-    at NoopTracer.startActiveSpan (/Users/briankramer/Documents/GitHub/dealership-ai/node_modules/.pnpm/@opentelemetry+api@1.9.0/node_modules/@opentelemetry/api/build/src/trace/NoopTracer.js:65:31) {
-  digest: 'DYNAMIC_SERVER_USAGE'
-}
-   Generating static pages (24/49) 
-Rate limit check error: ew [Error]: Dynamic server usage: Page couldn't be rendered statically because it used `request.url`. See more info here: https://nextjs.org/docs/messages/dynamic-server-error
-    at Object.eP [as staticGenerationBailout] (/Users/briankramer/Documents/GitHub/dealership-ai/node_modules/.pnpm/next@14.0.4_@babel+core@7.28.4_@opentelemetry+api@1.9.0_react-dom@18.2.0_react@18.2.0__react@18.2.0/node_modules/next/dist/compiled/next-server/app-route.runtime.prod.js:6:29225)
-    at i (/Users/briankramer/Documents/GitHub/dealership-ai/node_modules/.pnpm/next@14.0.4_@babel+core@7.28.4_@opentelemetry+api@1.9.0_react-dom@18.2.0_react@18.2.0__react@18.2.0/node_modules/next/dist/compiled/next-server/app-route.runtime.prod.js:6:34633)
-    at Object.get (/Users/briankramer/Documents/GitHub/dealership-ai/node_modules/.pnpm/next@14.0.4_@babel+core@7.28.4_@opentelemetry+api@1.9.0_react-dom@18.2.0_react@18.2.0__react@18.2.0/node_modules/next/dist/compiled/next-server/app-route.runtime.prod.js:6:34729)
-    at u (/Users/briankramer/Documents/GitHub/dealership-ai/apps/web/.next/server/app/api/rate-limit/check/route.js:1:506)
-    at /Users/briankramer/Documents/GitHub/dealership-ai/node_modules/.pnpm/next@14.0.4_@babel+core@7.28.4_@opentelemetry+api@1.9.0_react-dom@18.2.0_react@18.2.0__react@18.2.0/node_modules/next/dist/compiled/next-server/app-route.runtime.prod.js:6:41966
-    at /Users/briankramer/Documents/GitHub/dealership-ai/node_modules/.pnpm/next@14.0.4_@babel+core@7.28.4_@opentelemetry+api@1.9.0_react-dom@18.2.0_react@18.2.0__react@18.2.0/node_modules/next/dist/server/lib/trace/tracer.js:133:36
-    at NoopContextManager.with (/Users/briankramer/Documents/GitHub/dealership-ai/node_modules/.pnpm/@opentelemetry+api@1.9.0/node_modules/@opentelemetry/api/build/src/context/NoopContextManager.js:25:19)
-    at ContextAPI.with (/Users/briankramer/Documents/GitHub/dealership-ai/node_modules/.pnpm/@opentelemetry+api@1.9.0/node_modules/@opentelemetry/api/build/src/api/context.js:60:46)
-    at NoopTracer.startActiveSpan (/Users/briankramer/Documents/GitHub/dealership-ai/node_modules/.pnpm/@opentelemetry+api@1.9.0/node_modules/@opentelemetry/api/build/src/trace/NoopTracer.js:65:31)
-    at ProxyTracer.startActiveSpan (/Users/briankramer/Documents/GitHub/dealership-ai/node_modules/.pnpm/@opentelemetry+api@1.9.0/node_modules/@opentelemetry/api/build/src/trace/ProxyTracer.js:36:24) {
-  digest: 'DYNAMIC_SERVER_USAGE'
-}
-{"level":"error","message":"Authentication error","timestamp":"2025-09-23T03:44:07.669Z","error":{"name":"Error","message":"Dynamic server usage: Page couldn't be rendered statically because it used `headers`. See more info here: https://nextjs.org/docs/messages/dynamic-server-error","stack":"Error: Dynamic server usage: Page couldn't be rendered statically because it used `headers`. See more info here: https://nextjs.org/docs/messages/dynamic-server-error\n    at eP (/Users/briankramer/Documents/GitHub/dealership-ai/node_modules/.pnpm/next@14.0.4_@babel+core@7.28.4_@opentelemetry+api@1.9.0_react-dom@18.2.0_react@18.2.0__react@18.2.0/node_modules/next/dist/compiled/next-server/app-route.runtime.prod.js:6:29225)\n    at Module.eE (/Users/briankramer/Documents/GitHub/dealership-ai/node_modules/.pnpm/next@14.0.4_@babel+core@7.28.4_@opentelemetry+api@1.9.0_react-dom@18.2.0_react@18.2.0__react@18.2.0/node_modules/next/dist/compiled/next-server/app-route.runtime.prod.js:6:29561)\n    at i (/Users/briankramer/Documents/GitHub/dealership-ai/node_modules/.pnpm/next@14.0.4_@babel+core@7.28.4_@opentelemetry+api@1.9.0_react-dom@18.2.0_react@18.2.0__react@18.2.0/node_modules/next/dist/compiled/next-server/app-route.runtime.prod.js:6:34513)\n    at Object.get (/Users/briankramer/Documents/GitHub/dealership-ai/node_modules/.pnpm/next@14.0.4_@babel+core@7.28.4_@opentelemetry+api@1.9.0_react-dom@18.2.0_react@18.2.0__react@18.2.0/node_modules/next/dist/compiled/next-server/app-route.runtime.prod.js:6:34729)\n    at n.authenticateRequest (/Users/briankramer/Documents/GitHub/dealership-ai/apps/web/.next/server/app/api/queue/job/[id]/route.js:1:5835)\n    at c (/Users/briankramer/Documents/GitHub/dealership-ai/apps/web/.next/server/app/api/queue/metrics/route.js:1:1015)\n    at /Users/briankramer/Documents/GitHub/dealership-ai/node_modules/.pnpm/next@14.0.4_@babel+core@7.28.4_@opentelemetry+api@1.9.0_react-dom@18.2.0_react@18.2.0__react@18.2.0/node_modules/next/dist/compiled/next-server/app-route.runtime.prod.js:6:41966\n    at /Users/briankramer/Documents/GitHub/dealership-ai/node_modules/.pnpm/next@14.0.4_@babel+core@7.28.4_@opentelemetry+api@1.9.0_react-dom@18.2.0_react@18.2.0__react@18.2.0/node_modules/next/dist/server/lib/trace/tracer.js:133:36\n    at NoopContextManager.with (/Users/briankramer/Documents/GitHub/dealership-ai/node_modules/.pnpm/@opentelemetry+api@1.9.0/node_modules/@opentelemetry/api/build/src/context/NoopContextManager.js:25:19)\n    at ContextAPI.with (/Users/briankramer/Documents/GitHub/dealership-ai/node_modules/.pnpm/@opentelemetry+api@1.9.0/node_modules/@opentelemetry/api/build/src/api/context.js:60:46)"}}
-{"level":"info","message":"Queue processing started","timestamp":"2025-09-23T03:44:07.668Z","context":{"concurrency":3}}
-{"level":"info","message":"Job processor registered","timestamp":"2025-09-23T03:44:07.704Z","context":{"jobType":"batch-test"}}
-{"level":"info","message":"Queue processing started","timestamp":"2025-09-23T03:44:07.704Z","context":{"concurrency":3}}
-Auth middleware error: ew [Error]: Dynamic server usage: Page couldn't be rendered statically because it used `request.cookies`. See more info here: https://nextjs.org/docs/messages/dynamic-server-error
-    at Object.eP [as staticGenerationBailout] (/Users/briankramer/Documents/GitHub/dealership-ai/node_modules/.pnpm/next@14.0.4_@babel+core@7.28.4_@opentelemetry+api@1.9.0_react-dom@18.2.0_react@18.2.0__react@18.2.0/node_modules/next/dist/compiled/next-server/app-route.runtime.prod.js:6:29225)
-    at i (/Users/briankramer/Documents/GitHub/dealership-ai/node_modules/.pnpm/next@14.0.4_@babel+core@7.28.4_@opentelemetry+api@1.9.0_react-dom@18.2.0_react@18.2.0__react@18.2.0/node_modules/next/dist/compiled/next-server/app-route.runtime.prod.js:6:34633)
-    at Object.get (/Users/briankramer/Documents/GitHub/dealership-ai/node_modules/.pnpm/next@14.0.4_@babel+core@7.28.4_@opentelemetry+api@1.9.0_react-dom@18.2.0_react@18.2.0__react@18.2.0/node_modules/next/dist/compiled/next-server/app-route.runtime.prod.js:6:34729)
-    at f (/Users/briankramer/Documents/GitHub/dealership-ai/apps/web/.next/server/chunks/4955.js:1:97266)
-    at /Users/briankramer/Documents/GitHub/dealership-ai/apps/web/.next/server/app/api/enterprise/multi-location/route.js:1:7483
-    at /Users/briankramer/Documents/GitHub/dealership-ai/node_modules/.pnpm/next@14.0.4_@babel+core@7.28.4_@opentelemetry+api@1.9.0_react-dom@18.2.0_react@18.2.0__react@18.2.0/node_modules/next/dist/compiled/next-server/app-route.runtime.prod.js:6:41966
-    at /Users/briankramer/Documents/GitHub/dealership-ai/node_modules/.pnpm/next@14.0.4_@babel+core@7.28.4_@opentelemetry+api@1.9.0_react-dom@18.2.0_react@18.2.0__react@18.2.0/node_modules/next/dist/server/lib/trace/tracer.js:133:36
-    at NoopContextManager.with (/Users/briankramer/Documents/GitHub/dealership-ai/node_modules/.pnpm/@opentelemetry+api@1.9.0/node_modules/@opentelemetry/api/build/src/context/NoopContextManager.js:25:19)
-    at ContextAPI.with (/Users/briankramer/Documents/GitHub/dealership-ai/node_modules/.pnpm/@opentelemetry+api@1.9.0/node_modules/@opentelemetry/api/build/src/api/context.js:60:46)
-    at NoopTracer.startActiveSpan (/Users/briankramer/Documents/GitHub/dealership-ai/node_modules/.pnpm/@opentelemetry+api@1.9.0/node_modules/@opentelemetry/api/build/src/trace/NoopTracer.js:65:31) {
-  digest: 'DYNAMIC_SERVER_USAGE'
-}
-{"level":"error","message":"Redis error","timestamp":"2025-09-23T03:44:07.759Z","error":{"name":"Error","message":"connect ECONNREFUSED 127.0.0.1:6379","stack":"Error: connect ECONNREFUSED 127.0.0.1:6379\n    at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1637:16)\n    at TCPConnectWrap.callbackTrampoline (node:internal/async_hooks:130:17)"}}
-   Generating static pages (36/49) 
-{"level":"error","message":"Redis error","timestamp":"2025-09-23T03:44:07.721Z","error":{"name":"Error","message":"connect ECONNREFUSED 127.0.0.1:6379","stack":"Error: connect ECONNREFUSED 127.0.0.1:6379\n    at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1637:16)\n    at TCPConnectWrap.callbackTrampoline (node:internal/async_hooks:130:17)"}}
-{"level":"error","message":"Redis error","timestamp":"2025-09-23T03:44:07.841Z","error":{"name":"Error","message":"connect ECONNREFUSED 127.0.0.1:6379","stack":"Error: connect ECONNREFUSED 127.0.0.1:6379\n    at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1637:16)\n    at TCPConnectWrap.callbackTrampoline (node:internal/async_hooks:130:17)"}}
-{"level":"error","message":"Redis error","timestamp":"2025-09-23T03:44:07.749Z","error":{"name":"Error","message":"connect ECONNREFUSED 127.0.0.1:6379","stack":"Error: connect ECONNREFUSED 127.0.0.1:6379\n    at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1637:16)\n    at TCPConnectWrap.callbackTrampoline (node:internal/async_hooks:130:17)"}}
-{"level":"error","message":"Redis error","timestamp":"2025-09-23T03:44:07.750Z","error":{"name":"Error","message":"connect ECONNREFUSED 127.0.0.1:6379","stack":"Error: connect ECONNREFUSED 127.0.0.1:6379\n    at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1637:16)\n    at TCPConnectWrap.callbackTrampoline (node:internal/async_hooks:130:17)"}}
-{"level":"error","message":"Redis error","timestamp":"2025-09-23T03:44:07.763Z","error":{"name":"Error","message":"connect ECONNREFUSED 127.0.0.1:6379","stack":"Error: connect ECONNREFUSED 127.0.0.1:6379\n    at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1637:16)\n    at TCPConnectWrap.callbackTrampoline (node:internal/async_hooks:130:17)"}}
-{"level":"error","message":"Redis error","timestamp":"2025-09-23T03:44:07.776Z","error":{"name":"Error","message":"connect ECONNREFUSED 127.0.0.1:6379","stack":"Error: connect ECONNREFUSED 127.0.0.1:6379\n    at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1637:16)\n    at TCPConnectWrap.callbackTrampoline (node:internal/async_hooks:130:17)"}}
-{"level":"error","message":"Redis error","timestamp":"2025-09-23T03:44:07.992Z","error":{"name":"Error","message":"connect ECONNREFUSED 127.0.0.1:6379","stack":"Error: connect ECONNREFUSED 127.0.0.1:6379\n    at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1637:16)\n    at TCPConnectWrap.callbackTrampoline (node:internal/async_hooks:130:17)"}}
-{"level":"error","message":"Redis error","timestamp":"2025-09-23T03:44:08.038Z","error":{"name":"Error","message":"connect ECONNREFUSED 127.0.0.1:6379","stack":"Error: connect ECONNREFUSED 127.0.0.1:6379\n    at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1637:16)\n    at TCPConnectWrap.callbackTrampoline (node:internal/async_hooks:130:17)"}}
- ✓ Generating static pages (49/49) 
-   Finalizing page optimization ...
-   Collecting build traces ...
-
-Route (app)                                   Size     First Load JS
-┌ ○ /                                         99.9 kB         281 kB
-├ ○ /_not-found                               874 B            83 kB
-├ ○ /ai-chat                                  3.94 kB         103 kB
-├ ○ /analytics                                4.57 kB         104 kB
-├ λ /api/advanced-kpis                        0 B                0 B
-├ λ /api/ai-assistant/chat                    0 B                0 B
-├ λ /api/ai/chat                              0 B                0 B
-├ λ /api/ai/chat/stream                       0 B                0 B
-├ λ /api/analytics/predictions                0 B                0 B
-├ λ /api/auth/[...nextauth]                   0 B                0 B
-├ λ /api/auth/register                        0 B                0 B
-├ λ /api/auth/signup                          0 B                0 B
-├ λ /api/batch/expand                         0 B                0 B
-├ λ /api/batch/preview                        0 B                0 B
-├ λ /api/batch/run                            0 B                0 B
-├ λ /api/dashboard                            0 B                0 B
-├ λ /api/dashboard/enhanced                   0 B                0 B
-├ λ /api/enterprise/competitive-intelligence  0 B                0 B
-├ λ /api/enterprise/multi-location            0 B                0 B
-├ λ /api/enterprise/revenue-attribution       0 B                0 B
-├ ○ /api/health                               0 B                0 B
-├ λ /api/integrations                         0 B                0 B
-├ λ /api/monitoring/metrics                   0 B                0 B
-├ λ /api/monitoring/sentry-tunnel             0 B                0 B
-├ λ /api/pilot/business-impact                0 B                0 B
-├ λ /api/pilot/data-connectors                0 B                0 B
-├ λ /api/pilot/feedback                       0 B                0 B
-├ λ /api/pilot/industry-template              0 B                0 B
-├ λ /api/pilot/toyota-naples                  0 B                0 B
-├ λ /api/prompts                              0 B                0 B
-├ λ /api/queue/control                        0 B                0 B
-├ λ /api/queue/job/[id]                       0 B                0 B
-├ λ /api/queue/jobs                           0 B                0 B
-├ λ /api/queue/metrics                        0 B                0 B
-├ λ /api/rate-limit/check                     0 B                0 B
-├ λ /api/v1/probe/retry-dlq                   0 B                0 B
-├ λ /api/v1/probe/status                      0 B                0 B
-├ λ /api/visibility                           0 B                0 B
-├ λ /api/voice-image/lot-intelligence         0 B                0 B
-├ λ /api/voice-image/radio-analysis           0 B                0 B
-├ λ /api/voice-image/voice-insights           0 B                0 B
-├ ○ /auth/error                               2 kB           90.9 kB
-├ ○ /auth/signin                              1.93 kB         101 kB
-├ ○ /auth/signup                              2.32 kB         101 kB
-├ ○ /dashboard                                16.3 kB         215 kB
-├ ○ /dealers                                  3.55 kB         102 kB
-├ ○ /enterprise                               4.31 kB         103 kB
-├ ○ /monitoring                               4.48 kB         103 kB
-└ ○ /settings                                 4.12 kB         103 kB
-+ First Load JS shared by all                 82.1 kB
-  ├ chunks/402-08e0ba66cca6d047.js            26.8 kB
-  ├ chunks/70d7567e-65508726a3ae03f2.js       53.3 kB
-  ├ chunks/main-app-cfdd987bfe46950f.js       225 B
-  └ chunks/webpack-c2ab3398ea5be1d3.js        1.79 kB
+./app/api/integrations/route.ts
 
 
-ƒ Middleware                                  40.6 kB
-
-○  (Static)   prerendered as static content
-λ  (Dynamic)  server-rendered on demand using Node.js
-
+> Build failed because of webpack errors
+ ELIFECYCLE  Command failed with exit code 1.
