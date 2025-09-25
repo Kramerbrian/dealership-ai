@@ -26,17 +26,14 @@ jobs:
     - name: Install dependencies
       run: pnpm install
 
-    - name: Build static site
+    - name: Prepare static site
       run: |
         cd apps/web
-        cp next.config.static.mjs next.config.mjs
-        rm -rf app/api
-        NODE_ENV=production NEXT_PUBLIC_APP_URL=https://${{ github.repository_owner }}.github.io/dealership-ai npx next build
-      env:
-        SKIP_ENV_VALIDATION: true
+        echo "Deploying static HTML version of DealershipAI"
+        ls -la static-site/
 
     - name: Deploy to GitHub Pages
       uses: peaceiris/actions-gh-pages@v3
       with:
         github_token: ${{ secrets.GITHUB_TOKEN }}
-        publish_dir: ./apps/web/out
+        publish_dir: ./apps/web/static-site

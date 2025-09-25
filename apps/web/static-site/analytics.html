@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Analytics - DealershipAI Enterprise</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body class="bg-gray-50 min-h-screen">
+    <nav class="bg-white shadow-sm border-b">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between h-16">
+                <div class="flex items-center">
+                    <div class="flex-shrink-0">
+                        <h1 class="text-xl font-bold text-gray-900">DealershipAI</h1>
+                    </div>
+                    <div class="hidden md:block ml-10">
+                        <div class="flex items-baseline space-x-8">
+                            <a href="index.html" class="text-gray-500 hover:text-gray-700 px-3 py-2 text-sm font-medium">Dashboard</a>
+                            <a href="settings.html" class="text-gray-500 hover:text-gray-700 px-3 py-2 text-sm font-medium">Settings</a>
+                            <a href="analytics.html" class="text-blue-600 px-3 py-2 text-sm font-medium border-b-2 border-blue-600">Analytics</a>
+                        </div>
+                    </div>
+                </div>
+                <div class="flex items-center">
+                    <span class="text-sm text-gray-700 mr-4">Toyota Naples</span>
+                    <div class="h-8 w-8 bg-blue-600 rounded-full flex items-center justify-center text-white text-sm font-medium">
+                        TN
+                    </div>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <div class="max-w-7xl mx-auto py-6 sm:px-6 lg:px-8">
+        <div class="px-4 py-6 sm:px-0">
+            <h1 class="text-3xl font-bold text-gray-900 mb-8">AI Visibility Analytics</h1>
+
+            <!-- KPI Cards -->
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
+                <div class="bg-white p-6 rounded-lg shadow-sm border">
+                    <div class="flex items-center">
+                        <i class="fas fa-eye text-blue-600 text-2xl mr-3"></i>
+                        <div>
+                            <div class="text-2xl font-bold text-gray-900">87%</div>
+                            <div class="text-sm text-gray-500">Overall Visibility</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="bg-white p-6 rounded-lg shadow-sm border">
+                    <div class="flex items-center">
+                        <i class="fas fa-chart-line text-green-600 text-2xl mr-3"></i>
+                        <div>
+                            <div class="text-2xl font-bold text-gray-900">+12%</div>
+                            <div class="text-sm text-gray-500">Monthly Growth</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="bg-white p-6 rounded-lg shadow-sm border">
+                    <div class="flex items-center">
+                        <i class="fas fa-dollar-sign text-purple-600 text-2xl mr-3"></i>
+                        <div>
+                            <div class="text-2xl font-bold text-gray-900">$2.4M</div>
+                            <div class="text-sm text-gray-500">Revenue Protected</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="bg-white p-6 rounded-lg shadow-sm border">
+                    <div class="flex items-center">
+                        <i class="fas fa-robot text-orange-600 text-2xl mr-3"></i>
+                        <div>
+                            <div class="text-2xl font-bold text-gray-900">4</div>
+                            <div class="text-sm text-gray-500">AI Platforms</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Charts -->
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
+                <div class="bg-white p-6 rounded-lg shadow-sm border">
+                    <h3 class="text-lg font-medium text-gray-900 mb-4">Visibility Trend</h3>
+                    <canvas id="visibilityChart" width="400" height="200"></canvas>
+                </div>
+                <div class="bg-white p-6 rounded-lg shadow-sm border">
+                    <h3 class="text-lg font-medium text-gray-900 mb-4">Platform Performance</h3>
+                    <canvas id="platformChart" width="400" height="200"></canvas>
+                </div>
+            </div>
+
+            <!-- Platform Details -->
+            <div class="bg-white rounded-lg shadow-sm border">
+                <div class="px-6 py-4 border-b">
+                    <h3 class="text-lg font-medium text-gray-900">AI Platform Breakdown</h3>
+                </div>
+                <div class="p-6">
+                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+                        <div class="text-center">
+                            <div class="text-3xl font-bold text-green-600 mb-2">92%</div>
+                            <div class="text-sm font-medium text-gray-900">ChatGPT</div>
+                            <div class="text-xs text-gray-500">Best performing</div>
+                            <div class="w-full bg-gray-200 rounded-full h-2 mt-2">
+                                <div class="bg-green-600 h-2 rounded-full" style="width: 92%"></div>
+                            </div>
+                        </div>
+                        <div class="text-center">
+                            <div class="text-3xl font-bold text-blue-600 mb-2">89%</div>
+                            <div class="text-sm font-medium text-gray-900">Claude</div>
+                            <div class="text-xs text-gray-500">Strong performance</div>
+                            <div class="w-full bg-gray-200 rounded-full h-2 mt-2">
+                                <div class="bg-blue-600 h-2 rounded-full" style="width: 89%"></div>
+                            </div>
+                        </div>
+                        <div class="text-center">
+                            <div class="text-3xl font-bold text-purple-600 mb-2">84%</div>
+                            <div class="text-sm font-medium text-gray-900">Perplexity</div>
+                            <div class="text-xs text-gray-500">Good visibility</div>
+                            <div class="w-full bg-gray-200 rounded-full h-2 mt-2">
+                                <div class="bg-purple-600 h-2 rounded-full" style="width: 84%"></div>
+                            </div>
+                        </div>
+                        <div class="text-center">
+                            <div class="text-3xl font-bold text-orange-600 mb-2">78%</div>
+                            <div class="text-sm font-medium text-gray-900">Gemini</div>
+                            <div class="text-xs text-gray-500">Room for improvement</div>
+                            <div class="w-full bg-gray-200 rounded-full h-2 mt-2">
+                                <div class="bg-orange-600 h-2 rounded-full" style="width: 78%"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Visibility Trend Chart
+        const visibilityCtx = document.getElementById('visibilityChart').getContext('2d');
+        new Chart(visibilityCtx, {
+            type: 'line',
+            data: {
+                labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'],
+                datasets: [{
+                    label: 'Visibility Score',
+                    data: [75, 78, 82, 85, 87, 87],
+                    borderColor: 'rgb(59, 130, 246)',
+                    backgroundColor: 'rgba(59, 130, 246, 0.1)',
+                    tension: 0.4
+                }]
+            },
+            options: {
+                responsive: true,
+                scales: {
+                    y: {
+                        beginAtZero: false,
+                        min: 70,
+                        max: 100
+                    }
+                },
+                plugins: {
+                    legend: {
+                        display: false
+                    }
+                }
+            }
+        });
+
+        // Platform Performance Chart
+        const platformCtx = document.getElementById('platformChart').getContext('2d');
+        new Chart(platformCtx, {
+            type: 'doughnut',
+            data: {
+                labels: ['ChatGPT', 'Claude', 'Perplexity', 'Gemini'],
+                datasets: [{
+                    data: [92, 89, 84, 78],
+                    backgroundColor: [
+                        'rgb(34, 197, 94)',
+                        'rgb(59, 130, 246)',
+                        'rgb(168, 85, 247)',
+                        'rgb(249, 115, 22)'
+                    ]
+                }]
+            },
+            options: {
+                responsive: true,
+                plugins: {
+                    legend: {
+                        position: 'bottom'
+                    }
+                }
+            }
+        });
+    </script>
+</body>
+</html>
