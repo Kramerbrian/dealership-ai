@@ -26,18 +26,17 @@ jobs:
     - name: Install dependencies
       run: pnpm install
 
-    - name: Build
-      run: pnpm run build
+    - name: Build static site
+      run: |
+        cd apps/web
+        cp next.config.static.mjs next.config.mjs
+        rm -rf app/api
+        NODE_ENV=production NEXT_PUBLIC_APP_URL=https://${{ github.repository_owner }}.github.io/dealership-ai npx next build
       env:
-        NODE_ENV: production
-        NEXT_PUBLIC_APP_URL: https://${{ github.repository_owner }}.github.io/dealership-ai
-
-    - name: Export static files
-      run: cd apps/web && npx next export
+        SKIP_ENV_VALIDATION: true
 
     - name: Deploy to GitHub Pages
       uses: peaceiris/actions-gh-pages@v3
       with:
         github_token: ${{ secrets.GITHUB_TOKEN }}
         publish_dir: ./apps/web/out
-        cname: dealership-ai-enterprise.com
