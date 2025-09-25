@@ -30,5 +30,32 @@
     }
   },
   "regions": ["iad1"],
-  "framework": "nextjs"
+  "framework": "nextjs",
+  "crons": [
+    {
+      "path": "/api/cron/enterprise-analytics",
+      "schedule": "0 6 * * *",
+      "description": "Daily enterprise analytics aggregation for 5000+ dealerships"
+    },
+    {
+      "path": "/api/cron/bulk-refresh",
+      "schedule": "0 10 * * *",
+      "description": "Morning bulk refresh for high-priority dealerships"
+    },
+    {
+      "path": "/api/cron/competitive-scan",
+      "schedule": "0 14 * * MON",
+      "description": "Weekly competitive intelligence scan across all markets"
+    },
+    {
+      "path": "/api/cron/cache-optimization",
+      "schedule": "0 2 * * *",
+      "description": "Overnight cache cleanup and optimization"
+    },
+    {
+      "path": "/api/cron/market-trends",
+      "schedule": "0 18 * * FRI",
+      "description": "Weekly market trends analysis for geographic clusters"
+    }
+  ]
 }

@@ -77,7 +77,9 @@ export async function POST(request: NextRequest) {
     // Rate limiting (more restrictive for refresh)
     const ip = request.ip ?? '127.0.0.1';
     const rateLimitResult = await limiter.check(5, ip); // 5 requests per minute
-    const success = 'success' in rateLimitResult ? rateLimitResult.success : rateLimitResult;
+    const success = typeof rateLimitResult === 'object' && 'success' in rateLimitResult
+      ? rateLimitResult.success
+      : Boolean(rateLimitResult);
 
     if (!success) {
       return NextResponse.json(

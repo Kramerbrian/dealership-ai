@@ -28,7 +28,9 @@ export async function GET(request: NextRequest) {
 
     // Apply rate limiting
     const rateLimitResult = await limiter.check(10, ip)
-    const success = 'success' in rateLimitResult ? rateLimitResult.success : rateLimitResult
+    const success = typeof rateLimitResult === 'object' && 'success' in rateLimitResult
+      ? rateLimitResult.success
+      : Boolean(rateLimitResult)
 
     if (!success) {
       logger.warn({ ip }, 'Rate limit exceeded')
@@ -176,7 +178,9 @@ export async function POST(request: NextRequest) {
 
     // Higher rate limit for batch requests
     const rateLimitResult = await limiter.check(5, ip)
-    const success = 'success' in rateLimitResult ? rateLimitResult.success : rateLimitResult
+    const success = typeof rateLimitResult === 'object' && 'success' in rateLimitResult
+      ? rateLimitResult.success
+      : Boolean(rateLimitResult)
 
     if (!success) {
       return NextResponse.json(
