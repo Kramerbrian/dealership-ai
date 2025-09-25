@@ -14,8 +14,10 @@ const nextConfig = {
     ignoreBuildErrors: true,
   },
 
-  // Production optimizations
-  output: 'standalone',
+  // Production optimizations - Static export for GitHub Pages
+  output: 'export',
+  trailingSlash: true,
+  basePath: '/dealership-ai',
 
   // Performance optimizations
   compress: true,
@@ -66,10 +68,9 @@ const nextConfig = {
     return config
   },
 
-  // Image optimization
+  // Image optimization - Disabled for static export
   images: {
-    formats: ['image/webp', 'image/avif'],
-    minimumCacheTTL: 60,
+    unoptimized: true,
   },
 
   // Environment-specific settings
