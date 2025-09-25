@@ -1,1 +1,8 @@
 node_modules
+.vercel
+.next/
+**/.next/cache/
+**/.next/standalone/
+out/
+build/
+dist/

@@ -172,6 +172,34 @@ export class DB {
   }
 }
 
+// Cost tracking helper function
+export async function logCostEntry(entry: {
+  dealerId?: string
+  operation: string
+  cost: number
+  provider: string
+  model?: string
+  tokens?: number
+}) {
+  try {
+    await DB.query(`
+      INSERT INTO cost_tracking (
+        dealership_id, cost_category, cost_amount, api_calls,
+        success, job_type, analysis_date, created_at
+      ) VALUES ($1, $2, $3, $4, $5, $6, NOW(), NOW())
+    `, [
+      entry.dealerId || null,
+      entry.operation,
+      entry.cost,
+      1,
+      true,
+      'ai_chat'
+    ])
+  } catch (error) {
+    logger.warn({ error, entry }, 'Failed to log cost entry')
+  }
+}
+
 // Schema creation helpers for development
 export const createTablesSQL = `
   -- Dealers table

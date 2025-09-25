@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { createLogger } from '@/lib/logger'
 import { distributedCacheManager } from '@/lib/enterprise/distributed-cache-manager'
+import { authenticDataCollector } from '@/lib/data-collection/authentic-data-collector'
 import { db } from '@/lib/db'
 
 const logger = createLogger('cron-cache-optimization')
@@ -188,21 +189,49 @@ async function preWarmFrequentlyAccessedData() {
       LIMIT 100
     `)
 
-    // Pre-warm cache for these dealerships with synthetic data
+    // Pre-warm cache with authentic data collection
     const bulkAnalyses: any[] = []
 
     for (const dealership of frequentDealerships.rows) {
-      const syntheticData = generateSyntheticAnalysisData(dealership)
-      bulkAnalyses.push({
-        dealershipId: dealership.id,
-        data: syntheticData,
-        dealershipData: {
-          state: dealership.state_code,
-          domain: dealership.primary_domain,
-          brands: dealership.brands
-        },
-        tier: 'L3'
-      })
+      try {
+        // Use authentic data collector for high-value dealerships
+        const authenticData = await authenticDataCollector.collectDealershipData(dealership.primary_domain, {
+          includeTechnicalSEO: false, // Light collection for pre-warming
+          includeCompetitorData: false,
+          includeMarketAnalysis: false,
+          maxCostPerDealer: 1.00 // Reduced cost for cache pre-warming
+        })
+
+        bulkAnalyses.push({
+          dealershipId: dealership.id,
+          data: {
+            ...authenticData,
+            cache_prewarmed: true,
+            prewarming_cost: authenticData.metadata.costBreakdown.total
+          },
+          dealershipData: {
+            state: dealership.state_code,
+            domain: dealership.primary_domain,
+            brands: dealership.brands
+          },
+          tier: 'L3'
+        })
+      } catch (error) {
+        logger.warn({ error, dealership: dealership.id }, 'Failed to collect authentic data for pre-warming, using synthetic')
+
+        // Fallback to synthetic data
+        const syntheticData = generateSyntheticAnalysisData(dealership)
+        bulkAnalyses.push({
+          dealershipId: dealership.id,
+          data: syntheticData,
+          dealershipData: {
+            state: dealership.state_code,
+            domain: dealership.primary_domain,
+            brands: dealership.brands
+          },
+          tier: 'L3'
+        })
+      }
     }
 
     // Store in cache

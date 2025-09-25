@@ -1,22 +1,6 @@
 {
-  "version": 2,
-  "builds": [
-    {
-      "src": "apps/web/package.json",
-      "use": "@vercel/next",
-      "config": {
-        "distDir": ".next"
-      }
-    }
-  ],
-  "routes": [
-    {
-      "src": "/(.*)",
-      "dest": "apps/web/$1"
-    }
-  ],
   "functions": {
-    "apps/web/app/api/**/*.ts": {
+    "app/api/**/*.ts": {
       "maxDuration": 30
     }
   },
@@ -34,28 +18,27 @@
   "crons": [
     {
       "path": "/api/cron/enterprise-analytics",
-      "schedule": "0 6 * * *",
-      "description": "Daily enterprise analytics aggregation for 5000+ dealerships"
+      "schedule": "0 6 * * *"
     },
     {
       "path": "/api/cron/bulk-refresh",
-      "schedule": "0 10 * * *",
-      "description": "Morning bulk refresh for high-priority dealerships"
+      "schedule": "0 10 * * *"
     },
     {
       "path": "/api/cron/competitive-scan",
-      "schedule": "0 14 * * MON",
-      "description": "Weekly competitive intelligence scan across all markets"
+      "schedule": "0 14 * * 1"
     },
     {
       "path": "/api/cron/cache-optimization",
-      "schedule": "0 2 * * *",
-      "description": "Overnight cache cleanup and optimization"
+      "schedule": "0 2 * * *"
     },
     {
       "path": "/api/cron/market-trends",
-      "schedule": "0 18 * * FRI",
-      "description": "Weekly market trends analysis for geographic clusters"
+      "schedule": "0 18 * * 5"
+    },
+    {
+      "path": "/api/cron/daily-cost-summary",
+      "schedule": "0 1 * * *"
     }
   ]
 }

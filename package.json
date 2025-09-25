@@ -18,7 +18,9 @@
     "db:seed": "tsx scripts/seed-demo.ts",
     "queue:dev": "tsx queue/worker-dev.ts",
     "deploy:vercel": "vercel --prod",
-    "deploy:setup": "pnpm db:generate && pnpm db:migrate"
+    "deploy:setup": "pnpm db:generate && pnpm db:migrate",
+    "migrate:enterprise": "node scripts/run-migrations.js",
+    "deploy:full": "./scripts/deploy-to-vercel.sh"
   },
   "dependencies": {
     "@types/node": "^20.10.0",
